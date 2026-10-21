@@ -213,7 +213,7 @@ export const STATEMENT_SECTIONS: StatementSectionDef[] = [
       'student and staff AI literacy.',
     ],
     stems: [
-      'AI integration within the programme is informed by SETU’s principles for responsible AI use. In particular, the programme considers…',
+      'AI integration within the programme is informed by the institution’s principles for responsible AI use. In particular, the programme considers…',
     ],
   },
   {

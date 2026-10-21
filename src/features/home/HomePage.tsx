@@ -8,7 +8,6 @@ import { downloadJson, libraryFileName } from '../../store/download'
 import { libraryBundle } from '../../store/library'
 import { useWorkspace } from '../../store/workspace'
 import { ImportButton } from './ImportButton'
-import { CLASSIC_URL, LegacyBanner } from './LegacyBanner'
 import { saveSample } from './sample'
 
 export function HomePage() {
@@ -23,9 +22,18 @@ export function HomePage() {
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-slate-900">{HOME.title}</h1>
         <p className="max-w-3xl text-base text-slate-700">{HOME.subtitle}</p>
+        <p className="max-w-3xl text-sm text-slate-700">{HOME.free}</p>
       </header>
 
-      <LegacyBanner />
+      <Callout title="Your work stays in this browser" tone="note">
+        <p>{HOME.data}</p>
+        <p>
+          {HOME.backup}{' '}
+          <Link className="font-medium underline" to="/privacy">
+            Privacy and data storage
+          </Link>
+        </p>
+      </Callout>
 
       <section aria-labelledby="questions" className="grid gap-4 sm:grid-cols-2">
         <h2 id="questions" className="sr-only">
@@ -92,13 +100,10 @@ export function HomePage() {
 
       <Callout title="About these tools" tone="note">
         <p>{HOME.developmental}</p>
-        <p>{HOME.data}</p>
         <p>
-          The previous, single combined review remains available as the{' '}
-          <a className="font-medium underline" href={CLASSIC_URL}>
-            Classic tool
-          </a>{' '}
-          for comparison.
+          <Link className="font-medium underline" to="/about">
+            About AI Integration Review
+          </Link>
         </p>
       </Callout>
     </div>

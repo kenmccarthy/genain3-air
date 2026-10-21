@@ -43,7 +43,7 @@ export function ModuleSummary() {
 
       <article className="space-y-4">
         <p className="hidden text-xs text-slate-500 print:block">
-          SETU Module AI Integration Review · generated {new Date().toLocaleDateString()}
+          Module AI Integration Review · generated {new Date().toLocaleDateString()}
         </p>
         {blocks.map((b) => (
           <Section key={b.id} title={b.heading}>

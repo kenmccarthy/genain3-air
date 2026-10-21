@@ -2,7 +2,7 @@
 
 export const STATEMENT = {
   title: 'Programme AI Integration Statement',
-  lede: 'A concise statement of the programme’s approach to AI, drafted from your programme review for the team to edit and agree. It can be used as supporting documentation for Academic Unit Review, programme review and external review.',
+  lede: 'A concise statement of the programme’s approach to AI, drafted from your programme review for the team to edit and agree. It can be used as supporting documentation for programme review, external review and other institutional review processes.',
   provisional:
     'A provisional statement can be drafted now. Where module contributions have been added, they can provide supporting examples.',
   approachQuestion: 'Which best describes the programme’s overall approach to AI?',
@@ -44,7 +44,7 @@ export const APPROVAL = {
   sendForReview: 'Send for programme-team review',
   record: 'Record approval',
   recordIntro:
-    'The statement is marked agreed only when you record who approved it and when. Selecting an option elsewhere in the review never approves it.',
+    'The statement is marked agreed only when you record who approved it and when. Selecting an option elsewhere in the review never approves it. “Agreed” means agreed through your institution’s or programme team’s own process; it does not mean GenAI:N3 has endorsed or approved the statement.',
   approvedBy: 'Approving programme team or role',
   approvalDate: 'Approval date',
   nextReview: 'Next review date',

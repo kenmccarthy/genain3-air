@@ -7,7 +7,8 @@ export const PROGRAMME_CONTEXT = {
     'How is AI affecting our discipline and the professional practice our graduates will enter?',
   disciplineHint:
     'Optional. A sentence or two is enough; it helps introduce the Programme AI Integration Statement.',
-  stagesHint: 'Used for the AI capability progression map.',
+  stagesHint:
+    'Stages are points of curriculum progression used for the AI capability progression map. They need not correspond to academic years.',
 }
 
 export const CAPABILITIES = {

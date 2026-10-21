@@ -1,6 +1,6 @@
 /**
  * Response options for the v2 Programme and Module AI Integration Reviews, transcribed from the
- * "SETU AI Integration Review — Redevelopment Specification". These are reflective responses,
+ * redevelopment specification for the original edition of this tool. These are reflective responses,
  * not quality scores, so they carry no colour tone.
  */
 import { AI_POSITIONS } from '../scales'

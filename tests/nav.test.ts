@@ -26,21 +26,21 @@ describe('context-aware navigation', () => {
   })
 })
 
-describe('v1 isolation', () => {
-  // The Classic tool, served from the same origin, owns this localStorage key. The new app may
-  // read it for migration but must never write it, so it is named in one place only and no code
-  // uses zustand's persist middleware (which is what wrote it in v1).
+describe('storage isolation', () => {
+  // The SETU edition uses the keys `setu-ai-review` (v1) and `setu-air:v2:*`. This edition must
+  // never read or write them, so no source file may name them, and no code may use zustand's
+  // persist middleware (which wrote the v1 key).
   const sources = import.meta.glob('../src/**/*.{ts,tsx}', {
     query: '?raw',
     import: 'default',
     eager: true,
   }) as Record<string, string>
 
-  it('names the v1 storage key only in the library module', () => {
+  it("never names the SETU edition's storage keys", () => {
     const files = Object.entries(sources)
-      .filter(([, src]) => src.includes("'setu-ai-review'"))
+      .filter(([, src]) => /'setu-ai-review'|['`]setu-air:/.test(src))
       .map(([f]) => f)
-    expect(files).toEqual(['../src/store/library.ts'])
+    expect(files).toEqual([])
   })
 
   it('does not use the persist middleware anywhere', () => {

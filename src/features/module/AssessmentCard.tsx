@@ -85,7 +85,7 @@ export function AssessmentCard({ index, open }: { index: number; open?: boolean 
             placeholder="e.g. 40"
           />
           <TextInput
-            label="Semester (optional)"
+            label="Semester or term (optional)"
             value={a.semester}
             onChange={(semester) => patch({ semester })}
             placeholder="e.g. 1"

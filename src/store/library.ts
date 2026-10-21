@@ -3,10 +3,11 @@
  * or importing a review never overwrites another. Functions take a `Storage` so they can be
  * tested without a browser.
  *
- * The v1 tool (still served at /classic/ on the same origin) owns the key `setu-ai-review`.
- * Nothing here ever writes that key.
+ * Every key starts with STORAGE_PREFIX, which differs from the SETU edition's, so this edition
+ * never reads or writes another edition's reviews. Reviews move between editions only as files.
  */
 import { z } from 'zod'
+import { STORAGE_PREFIX } from '../config/branding'
 import { migrateV1Review } from '../migrate/v1ToV2'
 import { uid } from '../model/v2/defaults'
 import {
@@ -18,9 +19,9 @@ import {
 } from '../model/v2/schema'
 import type { ParsedImport } from './importV2'
 
-export const V1_STORAGE_KEY = 'setu-ai-review'
-export const INDEX_KEY = 'setu-air:v2:index'
-export const reviewKey = (id: string) => `setu-air:v2:review:${id}`
+export const INDEX_KEY = `${STORAGE_PREFIX}:v2:index`
+export const reviewKey = (id: string) => `${STORAGE_PREFIX}:v2:review:${id}`
+const PROBE_KEY = `${STORAGE_PREFIX}:v2:probe`
 
 const IndexEntrySchema = z.object({
   id: z.string(),
@@ -35,8 +36,6 @@ export type IndexEntry = z.infer<typeof IndexEntrySchema>
 const IndexSchema = z.object({
   schemaVersion: z.literal(SCHEMA_VERSION_V2).default(SCHEMA_VERSION_V2),
   reviews: z.array(IndexEntrySchema).default([]),
-  /** Record of v1 reviews already migrated, keyed by v1 review id → v1 updatedAt at migration. */
-  migratedFromV1: z.record(z.string(), z.string()).default({}),
 })
 export type LibraryIndex = z.infer<typeof IndexSchema>
 
@@ -96,12 +95,6 @@ export function deleteReview(storage: Storage, id: string): void {
   storage.removeItem(reviewKey(id))
   const index = readIndex(storage)
   index.reviews = index.reviews.filter((r) => r.id !== id)
-  writeIndex(storage, index)
-}
-
-export function markV1Migrated(storage: Storage, v1Id: string, v1UpdatedAt: string): void {
-  const index = readIndex(storage)
-  index.migratedFromV1[v1Id] = v1UpdatedAt
   writeIndex(storage, index)
 }
 
@@ -215,9 +208,8 @@ export class MemoryStorage implements Storage {
 export function browserStorage(): { storage: Storage; persistent: boolean } {
   try {
     const s = window.localStorage
-    const probe = 'setu-air:v2:probe'
-    s.setItem(probe, '1')
-    s.removeItem(probe)
+    s.setItem(PROBE_KEY, '1')
+    s.removeItem(PROBE_KEY)
     return { storage: s, persistent: true }
   } catch {
     return { storage: new MemoryStorage(), persistent: false }

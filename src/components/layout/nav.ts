@@ -1,3 +1,4 @@
+import { BRANDING } from '../../config/branding'
 import type { ReviewKind } from '../../model/v2/schema'
 
 export interface NavItem {
@@ -40,11 +41,13 @@ export const reviewPath = (kind: ReviewKind, id: string, section = 'context') =>
   `/${kind}/${id}/${section}`
 
 const HOME: NavGroup = {
-  label: 'SETU AI Integration Review',
+  label: BRANDING.title,
   items: [
     { to: '/', label: 'Home' },
     { to: '/reviews', label: 'Saved reviews' },
     { to: '/help', label: 'Help and guidance' },
+    { to: '/about', label: 'About' },
+    { to: '/privacy', label: 'Privacy and data storage' },
   ],
 }
 

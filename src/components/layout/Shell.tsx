@@ -7,6 +7,8 @@ import { navFor } from './nav'
 import { programmeProgress } from '../../logic/v2/programmeSummary'
 import { moduleProgress } from '../../logic/v2/moduleSummary'
 import { Button } from '../fields'
+import { BRANDING } from '../../config/branding'
+import { Footer } from './Footer'
 
 export function Shell() {
   const match = useMatch('/:kind/:reviewId/*')
@@ -51,10 +53,8 @@ export function Shell() {
       >
         <div className="border-b border-slate-200 px-4 py-4">
           <Link to="/" className="block">
-            <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">SETU</p>
-            <p className="text-base font-bold leading-tight text-slate-900">
-              AI Integration Review
-            </p>
+            <p className="text-base font-bold leading-tight text-slate-900">{BRANDING.title}</p>
+            <p className="text-xs font-medium text-brand-700">{BRANDING.publisher}</p>
           </Link>
           {inReview && (
             <div className="mt-2">
@@ -164,6 +164,7 @@ export function Shell() {
             <Outlet />
           </div>
         </main>
+        {!isPrint && <Footer />}
       </div>
     </div>
   )

@@ -23,3 +23,28 @@
   `notices` script.
 - CI runs lint, typecheck, tests, format check and build. There is no deployment workflow.
 - Baseline on the unmodified snapshot: lint, typecheck, 95 tests, format check and build all pass.
+
+## Stage 3 — Branding and content
+
+- `src/config/branding.ts` holds the title, publisher line, site URL, exact attribution, source
+  commit, repository URL, feedback address and subject template, licence links and storage prefix.
+  The application version comes from `package.json` through Vite's `define` (`__APP_VERSION__`).
+- New footer (publisher line, version, About, Privacy and data storage, Licensing, Feedback) and
+  new About, Privacy and data storage, and Licensing pages (`/about`, `/privacy`, `/licensing`).
+- The home page uses the approved introduction, says the tool is free and needs no account, and
+  has a non-blocking storage and backup notice.
+- SETU branding has been removed from the interface, page metadata and print headers. "Academic
+  Unit Review" and "SETU's principles" have been replaced with neutral wording. "Faculty" is now
+  "Faculty, school or department (optional)", "Semester" is now "Semester or term (optional)",
+  and "Number of stages / years" is now "Number of stages", with a hint that stages need not
+  match academic years.
+- Help and the statement approval text explain that "Agreed" means agreed through the team's own
+  process, not GenAI:N3 endorsement.
+- Removed the Classic tool link and banner, and the detection of the SETU v1 browser-storage key
+  (`migrate/legacyStorage.ts`): that key cannot exist on this edition's origin, and this edition
+  must not read SETU keys. Importing v1 files (`migrate/v1ToV2.ts`) is kept.
+- Storage keys now use the `genain3-air:` prefix. A source-scan test makes sure no source file
+  names a SETU storage key.
+- Removed the default Vite favicon. There is no favicon until approved GenAI:N3 assets exist.
+- New tests: `tests/branding.test.ts` (attribution, SETU mentions, network name in full,
+  metadata, feedback link, versions, licence files).

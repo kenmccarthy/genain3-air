@@ -53,7 +53,7 @@ export function programmeSummary(r: ProgrammeReview): SummaryBlock[] {
         [r.nfqLevel && `NFQ level ${r.nfqLevel}`, r.duration, r.stages && `${r.stages} stages`]
           .filter(Boolean)
           .join(' · '),
-        r.academicUnit && `Faculty: ${r.academicUnit}`,
+        r.academicUnit && `Faculty, school or department: ${r.academicUnit}`,
         r.coordinator && `Programme coordinator: ${r.coordinator}`,
         r.reviewDate && `Review date: ${r.reviewDate}`,
         r.team && `Review team: ${r.team}`,

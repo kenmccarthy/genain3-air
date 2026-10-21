@@ -41,7 +41,7 @@ export const HELP_SECTIONS: HelpSection[] = [
     blocks: [
       {
         kind: 'p',
-        text: 'The SETU AI Integration Review supports academic teams to reflect on what Generative AI means for curriculum, teaching, learning, assessment and graduate capabilities. It is built around two questions:',
+        text: 'AI Integration Review helps programme teams and educators reflect on how AI is addressed in learning outcomes, teaching, assessment and graduate capabilities. It is built around two questions:',
       },
       {
         kind: 'ul',
@@ -238,39 +238,39 @@ export const HELP_SECTIONS: HelpSection[] = [
           },
           {
             title: 'Agreed',
-            text: 'Only when you choose “Record approval” and enter the approving team or role and the date. Nothing else marks it agreed. If the text changes afterwards, the tool says so until approval is recorded again.',
+            text: 'Only when you choose “Record approval” and enter the approving team or role and the date. Nothing else marks it agreed. If the text changes afterwards, the tool says so until approval is recorded again. “Agreed” records approval through your institution’s or programme team’s own process. It does not mean GenAI:N3 has endorsed or approved the statement.',
           },
         ],
       },
       {
         kind: 'p',
-        text: 'Copy the text, print or save it as a PDF (optionally with an appendix of supporting evidence from the programme review and module contributions), or export it as a structured file. The statement can be used as supporting documentation for Academic Unit Review, programme review and external review.',
+        text: 'Copy the text, print or save it as a PDF (optionally with an appendix of supporting evidence from the programme review and module contributions), or export it as a structured file. The statement can be used as supporting documentation for programme review, external review and other institutional review processes.',
       },
     ],
   },
   {
     id: 'previous-version',
-    heading: 'Reviews from the previous version',
+    heading: 'Files from earlier versions and the SETU edition',
     blocks: [
       {
         kind: 'p',
-        text: 'The previous version of the tool held one combined review (Parts A–D). It remains available, unchanged, as the Classic tool, linked from the home page, so earlier work can still be opened and compared.',
-      },
-      {
-        kind: 'p',
-        text: 'If a review from the previous version is saved in your browser, the home page offers to bring it in. Download the backup it offers first. You can also import a file exported from the previous version. Either way, the original is not changed.',
+        text: 'This tool is a public edition of the SETU AI Integration Review. Files exported from the SETU edition, including files from its earlier single combined review (Parts A–D), can be imported from the home page. The original file is never changed.',
       },
       {
         kind: 'ul',
         items: [
-          'One earlier review becomes one programme review and one module review for each module, already linked.',
+          'One earlier combined review becomes one programme review and one module review for each module, already linked.',
           'Details, capability selections, learning outcomes, assessments, comments, actions and statement text are carried over.',
           'Earlier ratings are copied only where they mean the same thing. Otherwise the new question is left for your team to answer, and the earlier answer is shown read-only under “From your review in the previous version”.',
           'The earlier assessment ratings appear in each assessment’s “Explore Assessment Design in More Detail” section.',
           'The progression map used seven rows; it now has five. Cells combined into a new row are outlined in amber until you confirm them.',
-          'A statement marked agreed in the previous version starts here as a draft; its text is shown on the statement page for reuse.',
+          'A statement marked agreed in the earlier combined review starts here as a draft; its text is shown on the statement page for reuse.',
           'Notes on exactly what was carried over are on each review’s context page.',
         ],
+      },
+      {
+        kind: 'p',
+        text: 'Files exported from this edition can usually be imported into the SETU edition too, but the SETU edition does not keep fields it does not have, such as Institution Name, qualification framework and credit system. Keep your file from this edition as the master copy.',
       },
     ],
   },
@@ -280,7 +280,7 @@ export const HELP_SECTIONS: HelpSection[] = [
     blocks: [
       {
         kind: 'p',
-        text: 'Everything is saved automatically in this browser, on this computer. Nothing is sent to a server. A new review is saved as soon as you enter something in it.',
+        text: 'Everything is saved automatically in this browser, on this computer. Reviews are not sent to GenAI:N3 or anyone else. A new review is saved as soon as you enter something in it. See Privacy and data storage for details.',
       },
       {
         kind: 'ul',
@@ -290,6 +290,7 @@ export const HELP_SECTIONS: HelpSection[] = [
           '“Export data” on the home page saves every review in this browser as one file, for example to move to another computer.',
           'Reviews do not move between browsers or computers by themselves. Export and import to do that.',
           'Clearing your browser data deletes saved reviews. In some private windows nothing can be saved at all; the tool shows a warning if so. Export regularly.',
+          'If the browser’s storage is full, the tool tells you that your latest changes have not been saved. Your review stays open: export it straight away so nothing is lost.',
         ],
       },
     ],

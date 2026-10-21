@@ -47,7 +47,7 @@ export function ProgrammeSummary() {
 
       <article className="space-y-4">
         <p className="hidden text-xs text-slate-500 print:block">
-          SETU Programme AI Integration Review · generated {new Date().toLocaleDateString()}
+          Programme AI Integration Review · generated {new Date().toLocaleDateString()}
         </p>
         {blocks.map((b) => (
           <Section key={b.id} title={b.heading}>

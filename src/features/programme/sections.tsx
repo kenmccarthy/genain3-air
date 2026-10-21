@@ -63,7 +63,7 @@ export function ProgrammeContext() {
             placeholder="e.g. 8"
           />
           <NumberInput
-            label="Number of stages / years"
+            label="Number of stages"
             hint={PROGRAMME_CONTEXT.stagesHint}
             hintBelow
             value={r.stages}
@@ -77,7 +77,7 @@ export function ProgrammeContext() {
             onChange={(coordinator) => set({ coordinator })}
           />
           <TextInput
-            label="Faculty"
+            label="Faculty, school or department (optional)"
             value={r.academicUnit}
             onChange={(academicUnit) => set({ academicUnit })}
           />

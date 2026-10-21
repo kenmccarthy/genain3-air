@@ -436,7 +436,7 @@ function PrintedStatement() {
   return (
     <article className="hidden space-y-5 print:block">
       <header>
-        <p className="text-xs uppercase tracking-wider text-slate-500">SETU · {STATEMENT.title}</p>
+        <p className="text-xs uppercase tracking-wider text-slate-500">{STATEMENT.title}</p>
         <h1 className="text-2xl font-bold">{st.programmeName || r.title || 'Programme'}</h1>
         <p className="text-sm">
           Status: {optionLabel(STATEMENT_STATUSES, status)}

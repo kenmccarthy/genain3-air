@@ -1,11 +1,16 @@
 /// <reference types="vitest/config" />
+import { readFileSync } from 'node:fs'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
-// GitHub Pages serves project sites from /<repo>/ — set VITE_BASE in CI.
+const { version } = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'))
+
+// Built for the root of its own site (https://air.genain3.ie/). Hash routing means no server
+// rewrite rules are needed.
 export default defineConfig({
-  base: process.env.VITE_BASE ?? '/',
+  base: '/',
+  define: { __APP_VERSION__: JSON.stringify(version) },
   plugins: [react(), tailwindcss()],
   test: {
     include: ['tests/**/*.test.ts'],

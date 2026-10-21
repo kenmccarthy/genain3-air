@@ -7,7 +7,7 @@ export const SYNTHESIS = {
   discussionIntro: 'Having reviewed the evidence, discuss:',
   actionIntro: 'Categorise actions rather than attempting to redesign everything simultaneously.',
   summaryIntro:
-    'The completed review should generate a concise summary suitable for programme review and Academic Unit Review processes.',
+    'The completed review should generate a concise summary suitable for programme review and other institutional review processes.',
 }
 
 export const PATTERN_DEFINITIONS = [

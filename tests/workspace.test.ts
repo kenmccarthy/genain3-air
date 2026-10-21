@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { useWorkspace } from '../src/store/workspace'
-import { V1_STORAGE_KEY, loadReview } from '../src/store/library'
+import { loadReview } from '../src/store/library'
 import type { ModuleReview, ProgrammeReview } from '../src/model/v2/schema'
 import { MemoryStorage } from './memoryStorage'
 
@@ -16,7 +16,9 @@ let storage: MemoryStorage
 
 beforeEach(() => {
   storage = new MemoryStorage()
-  storage.setItem(V1_STORAGE_KEY, 'v1 data')
+  // Keys another edition would use on a shared origin: this edition must leave them alone.
+  storage.setItem('setu-ai-review', 'v1 data')
+  storage.setItem('setu-air:v2:index', 'setu index')
   ws().useStorage(storage)
 })
 
@@ -78,9 +80,14 @@ describe('workspace', () => {
     expect(ws().current?.id).toBe(b.id)
   })
 
-  it('never writes the v1 storage key', () => {
+  it("writes only this edition's keys and leaves other editions' keys alone", () => {
     create('programme', { title: 'x' })
+    create('module', { title: 'y' })
     ws().remove(ws().entries[0].id)
-    expect(storage.getItem(V1_STORAGE_KEY)).toBe('v1 data')
+    expect(storage.getItem('setu-ai-review')).toBe('v1 data')
+    expect(storage.getItem('setu-air:v2:index')).toBe('setu index')
+    const ours = storage.keys().filter((k) => !k.startsWith('setu-'))
+    expect(ours.length).toBeGreaterThan(0)
+    for (const k of ours) expect(k.startsWith('genain3-air:v2:')).toBe(true)
   })
 })
