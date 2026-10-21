@@ -66,7 +66,7 @@ export function AssessmentCard({ index, open }: { index: number; open?: boolean 
           {status}
           {assessmentAnswered(a) && <span className="sr-only"> (answered)</span>}
         </span>
-        <span aria-hidden="true" className="ml-auto text-slate-400 group-open:rotate-180">
+        <span aria-hidden="true" className="ml-auto text-slate-500 group-open:rotate-180">
           ▾
         </span>
       </summary>

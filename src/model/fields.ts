@@ -1,5 +1,9 @@
 import { z } from 'zod'
 
+// Never generate code at run time (Zod otherwise probes `new Function`), so the site works under
+// a Content-Security-Policy without 'unsafe-eval'. See docs/deployment.md.
+z.config({ jitless: true })
+
 /** Enum of option values plus '' for "not yet answered". */
 export function scale<T extends string>(
   options: readonly { value: T }[],

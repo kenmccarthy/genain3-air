@@ -2,7 +2,7 @@
   "name": "genain3-air",
   "private": true,
   "version": "0.1.0",
-  "description": "AI Integration Review — A GenAI:N3 resource. A browser-based tool for reflecting on AI in programme and module design.",
+  "description": "AI Integration Review \u2014 A GenAI:N3 resource. A browser-based tool for reflecting on AI in programme and module design.",
   "license": "GPL-3.0-or-later",
   "type": "module",
   "repository": {
@@ -18,7 +18,8 @@
     "test": "vitest run",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "notices": "node scripts/third-party-notices.mjs"
+    "notices": "node scripts/third-party-notices.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "immer": "^11.1.18",
@@ -29,6 +30,8 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.11.0",
+    "@playwright/test": "1.56.1",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
@@ -40,5 +43,8 @@
     "typescript": "~6.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.0"
+  },
+  "overrides": {
+    "playwright-core": "1.56.1"
   }
 }

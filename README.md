@@ -71,6 +71,7 @@ npm run lint          # oxlint
 npm run typecheck     # TypeScript
 npm test              # Vitest unit tests
 npm run format:check  # Prettier
+npm run test:e2e      # browser tests (accessibility, imports, storage failures)
 npm run build         # static production build in dist/
 npm run notices       # regenerate THIRD-PARTY-NOTICES.md after dependency changes
 ```
@@ -89,3 +90,11 @@ Users should export JSON backups regularly.
 
 - [docs/implementation-log.md](docs/implementation-log.md): what was changed from the source
   edition, stage by stage.
+- [docs/compatibility.md](docs/compatibility.md): moving review files to and from the SETU edition.
+- [docs/accessibility-report.md](docs/accessibility-report.md): what was tested, what was fixed and
+  what is still to check.
+- [docs/privacy-review.md](docs/privacy-review.md): data flows and the checks behind the privacy
+  page.
+- [docs/maintenance.md](docs/maintenance.md): configuration, dependencies and schema changes.
+- [docs/deployment.md](docs/deployment.md): building and hosting the static site (not yet
+  deployed).

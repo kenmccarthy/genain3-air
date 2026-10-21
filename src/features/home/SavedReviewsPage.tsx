@@ -53,6 +53,7 @@ export function SavedReviewsPage() {
 
 function ReviewList({ kind, entries }: { kind: ReviewKind; entries: IndexEntry[] }) {
   const storage = useWorkspace((s) => s.storage)
+  const unsaved = useWorkspace((s) => s.unsaved)
   const remove = useWorkspace((s) => s.remove)
   const navigate = useNavigate()
   return (
@@ -83,15 +84,16 @@ function ReviewList({ kind, entries }: { kind: ReviewKind; entries: IndexEntry[]
               </div>
               <div className="flex gap-2">
                 <Button variant="primary" onClick={() => navigate(reviewPath(e.kind, e.id))}>
-                  Open
+                  Open<span className="sr-only"> {entryTitle(e)}</span>
                 </Button>
                 <Button
                   onClick={() => {
-                    const r = loadReview(storage, e.id)
+                    // Includes changes that could not be saved, if there are any.
+                    const r = unsaved[e.id] ?? loadReview(storage, e.id)
                     if (r) downloadJson(reviewFileName(r), r)
                   }}
                 >
-                  Export
+                  Export<span className="sr-only"> {entryTitle(e)}</span>
                 </Button>
                 <Button
                   variant="danger"
@@ -104,7 +106,7 @@ function ReviewList({ kind, entries }: { kind: ReviewKind; entries: IndexEntry[]
                       remove(e.id)
                   }}
                 >
-                  Delete
+                  Delete<span className="sr-only"> {entryTitle(e)}</span>
                 </Button>
               </div>
             </li>

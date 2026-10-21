@@ -95,3 +95,30 @@ These two stages were implemented together because they change the same files.
 - **Small departure from the plan:** in the provenance dialog, Escape cancels the whole import
   (nothing is written) rather than meaning "leave blank". This is safer if someone presses Escape
   expecting to back out; "Leave Institution Name blank" is still the default button.
+
+## Stage 6 — Quality and documentation
+
+- **Browser tests** (`tests/e2e/`, Playwright with axe-core). They run in CI.
+  - axe WCAG 2.0–2.2 A/AA checks on every page, at 320px and 1280px wide, and on the import dialog.
+  - Reflow at 320px.
+  - A keyboard-only module review.
+  - The phone menu and the skip link.
+  - The provenance dialog: default blank, Escape cancels, per-review choices, v1 files.
+  - The storage-full alert and its export.
+  - Footer, version and feedback link.
+  - The printed statement header.
+  - No third-party requests.
+  - The recommended Content-Security-Policy.
+- **Accessibility fixes:**
+  - Low-contrast grey text and symbols.
+  - The closed phone menu could still be reached with Tab.
+  - The menu button now has `aria-expanded` and focus handling.
+  - The save status no longer announces after every keystroke.
+  - Ambiguous Saved reviews button names.
+  - A stronger focus ring on text fields.
+- **Other changes:**
+  - Saved reviews' Export includes unsaved changes.
+  - Zod runs in `jitless` mode, so the site needs no `'unsafe-eval'`.
+- **New docs:** `docs/accessibility-report.md` (no conformance claimed: screen-reader, zoom,
+  forced-colour, touch and PDF checks are still to do by hand), `docs/privacy-review.md`,
+  `docs/maintenance.md` and `docs/deployment.md`.

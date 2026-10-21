@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useMatch } from 'react-router-dom'
 import { useWorkspace } from '../../store/workspace'
 import { downloadJson, reviewFileName } from '../../store/download'
@@ -28,6 +28,22 @@ export function Shell() {
     return () => window.removeEventListener('beforeunload', warn)
   }, [unsavedCount])
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuButton = useRef<HTMLButtonElement>(null)
+  const menu = useRef<HTMLElement>(null)
+
+  // On small screens the menu slides over the page: move focus into it when it opens, and let
+  // Escape close it and return focus to the menu button.
+  useEffect(() => {
+    if (!menuOpen) return
+    menu.current?.querySelector<HTMLElement>('a, button')?.focus()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setMenuOpen(false)
+      menuButton.current?.focus()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [menuOpen])
 
   const inReview =
     match && current && current.id === match.params.reviewId && current.kind === match.params.kind
@@ -58,8 +74,11 @@ export function Shell() {
         Skip to content
       </a>
       <aside
+        id="main-menu"
+        ref={menu}
         className={`no-print fixed inset-y-0 left-0 z-30 w-72 overflow-y-auto border-r border-slate-200 bg-white transition-transform lg:static lg:translate-x-0 ${
-          menuOpen ? 'translate-x-0' : '-translate-x-full'
+          // When closed on small screens the menu is also hidden from keyboard and screen readers.
+          menuOpen ? 'translate-x-0' : '-translate-x-full max-lg:invisible'
         }`}
       >
         <div className="border-b border-slate-200 px-4 py-4">
@@ -101,7 +120,7 @@ export function Shell() {
                       }
                     >
                       {item.number && (
-                        <span className="w-5 shrink-0 text-xs text-slate-400" aria-hidden="true">
+                        <span className="w-5 shrink-0 text-xs text-slate-500" aria-hidden="true">
                           {item.number}
                         </span>
                       )}
@@ -133,20 +152,31 @@ export function Shell() {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="no-print sticky top-0 z-10 flex items-center gap-3 border-b border-slate-200 bg-white/95 px-4 py-2 backdrop-blur">
           <button
+            ref={menuButton}
             className="rounded-md border border-slate-300 px-2 py-1 text-sm lg:hidden"
             onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
+            aria-expanded={menuOpen}
+            aria-controls="main-menu"
           >
             ☰
           </button>
-          <p className="min-w-0 flex-1 truncate text-xs text-slate-500" aria-live="polite">
-            {!inReview
-              ? ''
-              : unsaved[inReview.id]
-                ? 'Latest changes NOT saved: export this review now'
-                : !entries.some((e) => e.id === inReview.id)
-                  ? 'Not saved yet: the review is saved as soon as you enter something'
-                  : `${persistent ? 'Saved in this browser' : 'Not saved: this browser is blocking storage'} · last change ${new Date(inReview.updatedAt).toLocaleString()}`}
+          <p className="min-w-0 flex-1 truncate text-xs text-slate-500">
+            {/* Only the save state is announced, not the time of every change. */}
+            <span aria-live="polite">
+              {!inReview
+                ? ''
+                : unsaved[inReview.id]
+                  ? 'Latest changes NOT saved: export this review now'
+                  : !entries.some((e) => e.id === inReview.id)
+                    ? 'Not saved yet: the review is saved as soon as you enter something'
+                    : persistent
+                      ? 'Saved in this browser'
+                      : 'Not saved: this browser is blocking storage'}
+            </span>
+            {inReview && !unsaved[inReview.id] && entries.some((e) => e.id === inReview.id) && (
+              <> · last change {new Date(inReview.updatedAt).toLocaleString()}</>
+            )}
           </p>
           {inReview && (
             <Button onClick={() => downloadJson(reviewFileName(inReview), inReview)}>
