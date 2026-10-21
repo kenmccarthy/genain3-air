@@ -8,7 +8,9 @@ npm run lint && npm run typecheck && npm test && npm run format:check && npm run
 npm run test:e2e   # browser tests: accessibility, imports, storage failures (uses Chromium)
 ```
 
-CI runs all of these on every push and pull request. There is no deployment workflow.
+CI (`.github/workflows/ci.yml`) runs all of these on every push and pull request. Every push to
+`main` also publishes the GitHub Pages preview (`.github/workflows/deploy.yml`), after running the
+same checks. See `docs/deployment.md`.
 
 ## Where things are
 

@@ -3,8 +3,8 @@ on:
   push:
     branches: [main]
   pull_request:
-# Checks only. This repository has no deployment workflow: publishing the site is a separate,
-# explicitly approved step (see docs/deployment.md).
+# Checks only. Publishing is done by deploy.yml (the GitHub Pages preview), which runs the same
+# checks first; the final site is published separately (see docs/deployment.md).
 permissions:
   contents: read
 jobs:

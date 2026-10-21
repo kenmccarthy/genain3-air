@@ -5,6 +5,9 @@
 
 export const APP_VERSION = __APP_VERSION__
 
+/** True only in the GitHub Pages preview build, which shows a notice that it is a test version. */
+export const IS_PREVIEW = import.meta.env.VITE_PREVIEW === 'true'
+
 export const BRANDING = {
   title: 'AI Integration Review',
   publisher: 'A GenAI:N3 resource',
