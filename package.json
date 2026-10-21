@@ -1,8 +1,8 @@
 {
   "name": "genain3-air",
   "private": true,
-  "version": "0.1.0",
-  "description": "AI Integration Review \u2014 A GenAI:N3 resource. A browser-based tool for reflecting on AI in programme and module design.",
+  "version": "1.0.0-rc.1",
+  "description": "AI Integration Review — A GenAI:N3 resource. A browser-based tool for reflecting on AI in programme and module design.",
   "license": "GPL-3.0-or-later",
   "type": "module",
   "repository": {

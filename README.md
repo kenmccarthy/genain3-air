@@ -88,6 +88,7 @@ Users should export JSON backups regularly.
 
 ## Documentation
 
+- [CHANGELOG.md](CHANGELOG.md): release notes and known limitations.
 - [docs/implementation-log.md](docs/implementation-log.md): what was changed from the source
   edition, stage by stage.
 - [docs/compatibility.md](docs/compatibility.md): moving review files to and from the SETU edition.

@@ -107,7 +107,7 @@ test.describe('identity and navigation', () => {
     const href = (await feedback.getAttribute('href'))!
     expect(href).toMatch(/^mailto:air@genain3\.ie\?subject=/)
     expect(decodeURIComponent(href)).toMatch(
-      /subject=AI Integration Review feedback — v\d+\.\d+\.\d+$/,
+      /subject=AI Integration Review feedback — v\d+\.\d+\.\d+(-[\w.]+)?$/,
     )
     for (const name of ['About', 'Privacy and data storage', 'Licensing'])
       await expect(footer.getByRole('link', { name })).toBeVisible()

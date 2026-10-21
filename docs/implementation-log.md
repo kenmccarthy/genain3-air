@@ -122,3 +122,14 @@ These two stages were implemented together because they change the same files.
 - **New docs:** `docs/accessibility-report.md` (no conformance claimed: screen-reader, zoom,
   forced-colour, touch and PDF checks are still to do by hand), `docs/privacy-review.md`,
   `docs/maintenance.md` and `docs/deployment.md`.
+
+## Stage 7 — Release candidate
+
+- Version set to `1.0.0-rc.1` (shown in the footer and About page as `v1.0.0-rc.1`). The final
+  `1.0.0` is for the owner to set when accepting the release. This differs slightly from the plan,
+  which named `1.0.0` here; a pre-release label is more accurate for an unlaunched candidate.
+- `CHANGELOG.md` has release notes and known limitations.
+- Reproducibility: two clean builds of the same commit produced byte-identical `dist/` files.
+- `docs/deployment.md` gives provider-neutral hosting, caching and security-header guidance, and a
+  release checklist. **Nothing has been deployed.** The SETU repository and its deployment were not
+  changed at any stage.
