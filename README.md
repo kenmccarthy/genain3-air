@@ -2,8 +2,9 @@
 
 **A GenAI:N3 resource**
 
-> **Status: Under development — not yet launched.** This repository is public while the tool is
-> being developed. The website at `https://air.genain3.ie/` has not been published.
+> **Status: Preview — not yet launched.** A test version is served by GitHub Pages at
+> <https://kenmccarthy.github.io/genain3-air/>. The final site at `https://air.genain3.ie/` has not
+> been published. Reviews saved on the preview will not move to the final site automatically.
 
 AI Integration Review helps programme teams and educators reflect on how AI is addressed in
 learning outcomes, teaching, assessment and graduate capabilities. Programme and module reviews

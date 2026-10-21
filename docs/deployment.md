@@ -1,7 +1,48 @@
 # Deployment handover
 
-> **The site has not been deployed.** Publishing it needs the project owner's separate,
-> explicit approval after hosting is chosen. Nothing in this repository deploys it.
+> **The final site has not been deployed.** Publishing `https://air.genain3.ie/` needs the project
+> owner's separate, explicit approval after hosting is chosen. The only deployment in this
+> repository is the GitHub Pages **preview** described below.
+
+## GitHub Pages preview
+
+`.github/workflows/deploy.yml` publishes a preview to `https://kenmccarthy.github.io/genain3-air/`
+on every push to `main`, and can also be run by hand from the Actions tab. It does the following:
+
+1. Runs every check, including the browser tests. If any fails, nothing is published.
+2. Builds with `VITE_BASE=/<repo>/`, because Pages serves project sites from a sub-path, and
+   `VITE_PREVIEW=true`.
+3. Publishes `dist/` with GitHub's Pages actions.
+
+The preview build differs from the final build in two ways:
+
+- It shows a "Preview" notice saying that reviews saved there will not move to the final site.
+- It adds `<meta name="robots" content="noindex">`, so search engines don't index it.
+
+**One-off settings** (repository owner, on GitHub):
+
+1. **Settings → Pages → Build and deployment → Source: GitHub Actions.** The workflow tries to set
+   this up (`enablement: true`), but check it.
+2. After the first run, **Settings → Environments → `github-pages` → Deployment branches and
+   tags** must allow `main`. If the deploy step is rejected, change this and re-run the workflow.
+3. Leave **Custom domain** empty while the site is a preview.
+
+**Limits of the preview:**
+
+- GitHub Pages cannot send custom response headers, so the security headers recommended below do
+  not apply to it.
+- Its browser origin (`https://kenmccarthy.github.io`) is shared with the SETU edition. Their
+  storage keys don't overlap (see `docs/compatibility.md`).
+- Reviews saved on the preview stay with the preview's origin.
+
+**Later, moving to `air.genain3.ie`:**
+
+- If GitHub Pages is the final host: add a DNS CNAME `air.genain3.ie → kenmccarthy.github.io`, set
+  the custom domain in Settings → Pages with "Enforce HTTPS", and build with `VITE_BASE=/` and
+  without `VITE_PREVIEW`.
+- If another host is chosen: follow the rest of this page.
+
+Tell testers to export anything they want to keep from the preview first.
 
 AI Integration Review is a static site. Any static web host can serve it. No server code,
 database or build step is needed on the host.

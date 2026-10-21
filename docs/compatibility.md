@@ -11,12 +11,19 @@ own code (`tests/fixtures/`) and a frozen copy of its schema (`tests/compat/setu
 
 ## Browser storage
 
-The editions are hosted on different websites, and a browser keeps each website's storage
-separate. Reviews saved in one edition never appear in the other. To move work, export a file from
-one edition and import it into the other.
-
 This edition stores reviews under keys starting `genain3-air:`. It never reads or writes the SETU
-edition's keys (`setu-ai-review`, `setu-air:*`).
+edition's keys (`setu-ai-review`, `setu-air:*`), so reviews saved in one edition never appear in
+the other, even when both share a browser origin. To move work, export a file from one edition and
+import it into the other.
+
+- **Final site** (`https://air.genain3.ie/`): a different origin from the SETU edition, so the
+  browser keeps the two editions' storage completely separate.
+- **GitHub Pages preview** (`https://kenmccarthy.github.io/genain3-air/`): the same origin as the
+  SETU edition (`https://kenmccarthy.github.io/setu-module-review/`). The storage is shared, but the
+  key prefixes keep the editions apart.
+
+Browsers keep storage per origin, so reviews saved on the preview **do not move** to the final
+site. Export them from the preview and import them on the final site.
 
 ## SETU files imported into this edition
 

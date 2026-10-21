@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { APP_VERSION, BRANDING, feedbackMailto, versionLabel } from '../src/config/branding'
+import {
+  APP_VERSION,
+  BRANDING,
+  IS_PREVIEW,
+  feedbackMailto,
+  versionLabel,
+} from '../src/config/branding'
 import { SCHEMA_VERSION_V2 } from '../src/model/v2/schema'
 
 const sources = import.meta.glob('../src/**/*.{ts,tsx}', {
@@ -66,6 +72,12 @@ describe('identity', () => {
     const html = readRoot('index.html')
     expect(html).toContain('<title>AI Integration Review — A GenAI:N3 resource</title>')
     expect(html).not.toMatch(/SETU|favicon\.svg/)
+  })
+
+  it('shows the preview notice and noindex only in the preview build', () => {
+    expect(IS_PREVIEW).toBe(false)
+    expect(readRoot('index.html')).not.toContain('noindex')
+    expect(sources['../src/components/layout/Shell.tsx']).toContain('{IS_PREVIEW && (')
   })
 })
 

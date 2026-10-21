@@ -7,7 +7,7 @@ import { navFor } from './nav'
 import { programmeProgress } from '../../logic/v2/programmeSummary'
 import { moduleProgress } from '../../logic/v2/moduleSummary'
 import { Button } from '../fields'
-import { BRANDING } from '../../config/branding'
+import { BRANDING, IS_PREVIEW } from '../../config/branding'
 import { Footer } from './Footer'
 
 export function Shell() {
@@ -190,6 +190,12 @@ export function Shell() {
             Home
           </Link>
         </header>
+        {IS_PREVIEW && (
+          <p role="note" className="no-print bg-sky-50 px-4 py-2 text-sm text-sky-900">
+            <strong>Preview.</strong> This is a test version of {BRANDING.title}. Reviews saved here
+            will not move to the final site automatically; export any you want to keep.
+          </p>
+        )}
         {!persistent && (
           <p role="alert" className="no-print bg-amber-50 px-4 py-2 text-sm text-amber-900">
             This browser is blocking local storage, so your work will be lost when you close this

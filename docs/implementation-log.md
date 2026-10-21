@@ -21,7 +21,8 @@
   the development status notice.
 - `package.json`: name `genain3-air`, version `0.1.0`, licence `GPL-3.0-or-later`, plus a
   `notices` script.
-- CI runs lint, typecheck, tests, format check and build. There is no deployment workflow.
+- CI runs lint, typecheck, tests, format check and build. (A preview deployment was added later; see
+  below.)
 - Baseline on the unmodified snapshot: lint, typecheck, 95 tests, format check and build all pass.
 
 ## Stage 3 — Branding and content
@@ -133,3 +134,17 @@ These two stages were implemented together because they change the same files.
 - `docs/deployment.md` gives provider-neutral hosting, caching and security-header guidance, and a
   release checklist. **Nothing has been deployed.** The SETU repository and its deployment were not
   changed at any stage.
+
+## GitHub Pages preview
+
+Approved by the owner on 2026-10-21: serve a preview from GitHub Pages at the github.io sub-path
+first, with the final domain later.
+
+- `.github/workflows/deploy.yml` runs every check (including the browser tests), builds with
+  `VITE_BASE=/<repo>/` and `VITE_PREVIEW=true`, and publishes with GitHub's Pages actions on each
+  push to `main`. It is checked with actionlint.
+- `vite.config.ts` reads `VITE_BASE` (default `/`). The preview build adds a `noindex` meta tag,
+  and the app shows a "Preview" notice (`IS_PREVIEW` in `src/config/branding.ts`).
+- Docs: the README status, `docs/deployment.md` (preview section, one-off settings, limits, the
+  move to the final domain), and `docs/compatibility.md` (the preview shares a browser origin with
+  the SETU edition).
