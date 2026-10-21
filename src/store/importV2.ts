@@ -3,6 +3,10 @@
  * a v1 review (to migrate), a v2 programme or module review, a bundle of reviews, a module
  * contribution or a set of programme prompts. Files from a newer version are rejected rather
  * than downgraded.
+ *
+ * It also reports, without acting on them, fields the schema does not define (`unknownFields`)
+ * and, for version 2 reviews, which reviews have no institution name field (`withoutInstitution`;
+ * see provenance.ts). Both are read from the raw file, before defaults are filled in.
  */
 import type { z } from 'zod'
 import { ReviewSchema, type Review } from '../model/legacy/v1'
@@ -17,13 +21,24 @@ import {
   type ModuleContributionPacket,
   type ProgrammePromptsPacket,
 } from '../model/v2/schema'
+import { reviewsWithoutInstitution } from './provenance'
+import { unknownFields } from './unknownFields'
+
+interface Found {
+  /** Fields in the file that this edition does not define. */
+  unknownFields: string[]
+}
+interface Reviews extends Found {
+  /** Ids of reviews in the file with no institution name field; the user decides about these. */
+  withoutInstitution: string[]
+}
 
 export type ParsedImport =
-  | { ok: true; type: 'v1-review'; review: Review }
-  | { ok: true; type: 'review'; review: AnyReview }
-  | { ok: true; type: 'library'; bundle: LibraryBundle }
-  | { ok: true; type: 'module-contribution'; packet: ModuleContributionPacket }
-  | { ok: true; type: 'programme-prompts'; packet: ProgrammePromptsPacket }
+  | ({ ok: true; type: 'v1-review'; review: Review } & Found)
+  | ({ ok: true; type: 'review'; review: AnyReview } & Reviews)
+  | ({ ok: true; type: 'library'; bundle: LibraryBundle } & Reviews)
+  | ({ ok: true; type: 'module-contribution'; packet: ModuleContributionPacket } & Found)
+  | ({ ok: true; type: 'programme-prompts'; packet: ProgrammePromptsPacket } & Found)
   | { ok: false; error: string }
 
 function validate<T>(schema: z.ZodType<T>, data: unknown, what: string) {
@@ -57,15 +72,37 @@ export function parseImport(text: string): ParsedImport {
   switch (doc.packetType) {
     case 'module-contribution': {
       const r = validate(ModuleContributionPacketSchema, doc, 'module contribution')
-      return r.ok ? { ok: true, type: 'module-contribution', packet: r.data } : r
+      return r.ok
+        ? {
+            ok: true,
+            type: 'module-contribution',
+            packet: r.data,
+            unknownFields: unknownFields(ModuleContributionPacketSchema, doc),
+          }
+        : r
     }
     case 'programme-prompts': {
       const r = validate(ProgrammePromptsPacketSchema, doc, 'set of programme prompts')
-      return r.ok ? { ok: true, type: 'programme-prompts', packet: r.data } : r
+      return r.ok
+        ? {
+            ok: true,
+            type: 'programme-prompts',
+            packet: r.data,
+            unknownFields: unknownFields(ProgrammePromptsPacketSchema, doc),
+          }
+        : r
     }
     case 'library': {
       const r = validate(LibraryBundleSchema, doc, 'review bundle')
-      return r.ok ? { ok: true, type: 'library', bundle: r.data } : r
+      return r.ok
+        ? {
+            ok: true,
+            type: 'library',
+            bundle: r.data,
+            unknownFields: unknownFields(LibraryBundleSchema, doc),
+            withoutInstitution: reviewsWithoutInstitution(doc),
+          }
+        : r
     }
     case undefined:
       break
@@ -75,13 +112,28 @@ export function parseImport(text: string): ParsedImport {
 
   if (doc.kind === 'programme' || doc.kind === 'module') {
     const r = validate(AnyReviewSchema, doc, `${doc.kind} review`)
-    return r.ok ? { ok: true, type: 'review', review: r.data } : r
+    return r.ok
+      ? {
+          ok: true,
+          type: 'review',
+          review: r.data,
+          unknownFields: unknownFields(AnyReviewSchema, doc),
+          withoutInstitution: reviewsWithoutInstitution(doc),
+        }
+      : r
   }
 
   // Version 1 exports have schemaVersion 1 and hold the whole programme and its modules.
   if ((version === undefined || version === 1) && ('programme' in doc || 'modules' in doc)) {
     const r = validate(ReviewSchema, { ...doc, schemaVersion: 1 }, 'version 1 review')
-    return r.ok ? { ok: true, type: 'v1-review', review: r.data } : r
+    return r.ok
+      ? {
+          ok: true,
+          type: 'v1-review',
+          review: r.data,
+          unknownFields: unknownFields(ReviewSchema, doc),
+        }
+      : r
   }
   return { ok: false, error: 'The file does not contain a review.' }
 }

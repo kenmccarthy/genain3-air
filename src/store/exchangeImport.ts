@@ -6,14 +6,25 @@
 import { moduleContributionPacket, programmePromptsPacket } from '../logic/v2/exchange'
 import type { ModuleContributionPacket, ProgrammePromptsPacket } from '../model/v2/schema'
 import type { ParsedImport } from './importV2'
+import { unknownNote } from './library'
 
-type Result<T> = { ok: true; packet: T } | { ok: false; error: string }
+/** `note` tells the user about fields in the file that are not copied into the receiving review. */
+type Result<T> = { ok: true; packet: T; note: string } | { ok: false; error: string }
+
+function note(parsed: Extract<ParsedImport, { ok: true }>): string {
+  return unknownNote(parsed.unknownFields, false)
+}
 
 export function contributionFromImport(parsed: ParsedImport): Result<ModuleContributionPacket> {
   if (!parsed.ok) return parsed
-  if (parsed.type === 'module-contribution') return { ok: true, packet: parsed.packet }
+  if (parsed.type === 'module-contribution')
+    return { ok: true, packet: parsed.packet, note: note(parsed) }
   if (parsed.type === 'review' && parsed.review.kind === 'module')
-    return { ok: true, packet: moduleContributionPacket(parsed.review, parsed.review.updatedAt) }
+    return {
+      ok: true,
+      packet: moduleContributionPacket(parsed.review, parsed.review.updatedAt),
+      note: note(parsed),
+    }
   if (parsed.type === 'programme-prompts')
     return {
       ok: false,
@@ -28,9 +39,14 @@ export function contributionFromImport(parsed: ParsedImport): Result<ModuleContr
 
 export function promptsFromImport(parsed: ParsedImport): Result<ProgrammePromptsPacket> {
   if (!parsed.ok) return parsed
-  if (parsed.type === 'programme-prompts') return { ok: true, packet: parsed.packet }
+  if (parsed.type === 'programme-prompts')
+    return { ok: true, packet: parsed.packet, note: note(parsed) }
   if (parsed.type === 'review' && parsed.review.kind === 'programme')
-    return { ok: true, packet: programmePromptsPacket(parsed.review, parsed.review.updatedAt) }
+    return {
+      ok: true,
+      packet: programmePromptsPacket(parsed.review, parsed.review.updatedAt),
+      note: note(parsed),
+    }
   if (parsed.type === 'module-contribution')
     return {
       ok: false,

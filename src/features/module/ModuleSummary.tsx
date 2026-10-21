@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Callout, Section, TextArea } from '../../components/fields'
+import { Button, Callout, Section, TextArea, CopyButton } from '../../components/fields'
 import { reviewPath } from '../../components/layout/nav'
 import { MODULE_SUMMARY } from '../../content/v2/module'
 import { moduleContributionPacket } from '../../logic/v2/exchange'
@@ -22,7 +21,6 @@ const SECTION_FOR: Record<string, string> = {
 
 export function ModuleSummary() {
   const { review: m, set } = useModuleReview()
-  const [copied, setCopied] = useState(false)
   const blocks = moduleSummary(m).filter((b) => b.id !== 'contribution')
 
   return (
@@ -31,13 +29,7 @@ export function ModuleSummary() {
         <Button variant="primary" onClick={() => window.print()}>
           Print / save as PDF
         </Button>
-        <Button
-          onClick={() =>
-            void navigator.clipboard.writeText(moduleSummaryText(m)).then(() => setCopied(true))
-          }
-        >
-          {copied ? 'Copied' : 'Copy as text'}
-        </Button>
+        <CopyButton label="Copy as text" text={() => moduleSummaryText(m)} />
         <Button onClick={() => downloadJson(reviewFileName(m), m)}>Export review (JSON)</Button>
       </div>
 

@@ -17,7 +17,6 @@ export function buildSampleReview(): Review {
   const p = r.programme
   p.title = 'BSc (Hons) in Business Information Systems'
   p.nfqLevel = '8'
-  p.duration = '4 years'
   p.stages = 4
   p.coordinator = 'Dr A. Example'
   p.academicUnit = 'School of Business'

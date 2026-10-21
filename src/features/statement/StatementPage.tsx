@@ -3,6 +3,7 @@ import {
   Button,
   Callout,
   Choice,
+  CopyButton,
   Disclosure,
   Section,
   TextArea,
@@ -37,7 +38,6 @@ import { useProgramme } from '../programme/useProgramme'
 export function StatementPage() {
   const { review: r, edit } = useProgramme()
   const replace = useWorkspace((s) => s.replace)
-  const [copied, setCopied] = useState(false)
   const st = r.statement
   const sections = statementSections(r)
   const words = wordCount(statementText(r))
@@ -171,13 +171,7 @@ export function StatementPage() {
             <Button variant="primary" onClick={() => window.print()}>
               Print / save as PDF
             </Button>
-            <Button
-              onClick={() =>
-                void navigator.clipboard.writeText(statementText(r)).then(() => setCopied(true))
-              }
-            >
-              {copied ? 'Copied' : 'Copy text'}
-            </Button>
+            <CopyButton label="Copy text" text={() => statementText(r)} />
             <Button
               onClick={() =>
                 downloadJson(reviewFileName(r, 'ai-integration-statement'), statementExport(r))
@@ -437,6 +431,10 @@ function PrintedStatement() {
     <article className="hidden space-y-5 print:block">
       <header>
         <p className="text-xs uppercase tracking-wider text-slate-500">{STATEMENT.title}</p>
+        {/* Institution Name appears here only: it is never written into the statement's text. */}
+        {r.institutionName.trim() && (
+          <p className="text-sm font-medium">{r.institutionName.trim()}</p>
+        )}
         <h1 className="text-2xl font-bold">{st.programmeName || r.title || 'Programme'}</h1>
         <p className="text-sm">
           Status: {optionLabel(STATEMENT_STATUSES, status)}

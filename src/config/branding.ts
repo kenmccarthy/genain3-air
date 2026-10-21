@@ -58,3 +58,9 @@ export function feedbackMailto(version = APP_VERSION): string {
  * so the two editions never read or write each other's data.
  */
 export const STORAGE_PREFIX = 'genain3-air'
+
+/**
+ * Written into saved and exported files to record which application produced them. It is
+ * informational only and is not proof of origin: files can be edited, and older files have none.
+ */
+export const GENERATOR = { app: STORAGE_PREFIX, version: APP_VERSION }

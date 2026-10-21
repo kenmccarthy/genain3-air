@@ -1,12 +1,12 @@
 import { buildSampleReview } from '../../model/sample'
 import { migrateV1Review } from '../../migrate/v1ToV2'
-import { saveReview } from '../../store/library'
+import { saveReviews } from '../../store/library'
 import type { ProgrammeReview } from '../../model/v2/schema'
 
 /**
  * Saves the worked example as a new programme review with two linked module reviews. It is
  * built from the v1 sample through the same migration real data takes, and titled "Sample: …"
- * so it is never mistaken for a real review.
+ * so it is never mistaken for a real review. Institution Name is left blank.
  */
 export function saveSample(storage: Storage): ProgrammeReview {
   const { programme, modules } = migrateV1Review(buildSampleReview())
@@ -22,6 +22,7 @@ export function saveSample(storage: Storage): ProgrammeReview {
       snapshot: { ...c.snapshot, title: label(c.snapshot.title) },
     })),
   }
-  for (const r of [...ms, p]) saveReview(storage, r)
+  // All or nothing: throws, leaving storage unchanged, if the browser refuses the writes.
+  saveReviews(storage, [...ms, p])
   return p
 }

@@ -18,7 +18,7 @@ export function ImportedProgrammePriorities() {
   const entries = useWorkspace((s) => s.entries)
   const [message, setMessage] = useState<{ text: string; tone: 'ok' | 'error' } | null>(null)
 
-  const add = (packet: ProgrammePromptsPacket) => {
+  const add = (packet: ProgrammePromptsPacket, note = '') => {
     if (!packet.prompts.length) {
       setMessage({
         text: 'That programme has not recorded any priorities or questions yet.',
@@ -30,7 +30,7 @@ export function ImportedProgrammePriorities() {
     const name = `the prompts from ${packet.programmeTitle || 'this programme'}`
     const { apply, message } = confirmImport(matchPrompts(m, packet), name, held?.importedAt, KEPT)
     if (apply) replace(applyPrompts(m, packet))
-    setMessage({ text: message, tone: 'ok' })
+    setMessage({ text: message + note, tone: 'ok' })
   }
 
   const savedProgrammes = entries.filter((e) => e.kind === 'programme')
@@ -51,7 +51,7 @@ export function ImportedProgrammePriorities() {
             onText={(text) => {
               const r = promptsFromImport(parseImport(text))
               if (!r.ok) setMessage({ text: r.error, tone: 'error' })
-              else add(r.packet)
+              else add(r.packet, r.note)
             }}
             onError={(text) => setMessage({ text, tone: 'error' })}
           />

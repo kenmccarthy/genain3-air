@@ -18,6 +18,7 @@ import {
   COHERENCE,
   CURRICULUM,
   PRIORITIES,
+  INSTITUTION,
   PROGRAMME_CONTEXT,
   PROGRESSION,
 } from '../../content/v2/programme'
@@ -36,6 +37,7 @@ import { programmeLegacy } from '../../logic/v2/legacy'
 import { programmePromptsPacket } from '../../logic/v2/exchange'
 import { MAX_PRIORITIES } from '../../model/v2/defaults'
 import { downloadJson, reviewFileName } from '../../store/download'
+import { useWorkspace } from '../../store/workspace'
 import { LegacyPanel } from '../review/LegacyPanel'
 import { useProgramme } from './useProgramme'
 
@@ -46,6 +48,7 @@ function useLegacy() {
 
 export function ProgrammeContext() {
   const { review: r, set } = useProgramme()
+  const setInstitution = useWorkspace((s) => s.setInstitution)
   return (
     <>
       <Section title="About the programme" intro={PROGRAMME_CONTEXT.lede}>
@@ -57,7 +60,20 @@ export function ProgrammeContext() {
             className="sm:col-span-2"
           />
           <TextInput
-            label="NFQ level"
+            label={INSTITUTION.label}
+            hint={INSTITUTION.hint}
+            value={r.institutionName}
+            onChange={setInstitution}
+            className="sm:col-span-2"
+          />
+          <TextInput
+            label={PROGRAMME_CONTEXT.frameworkLabel}
+            hint={PROGRAMME_CONTEXT.frameworkHint}
+            value={r.qualificationFramework}
+            onChange={(qualificationFramework) => set({ qualificationFramework })}
+          />
+          <TextInput
+            label={PROGRAMME_CONTEXT.levelLabel(r.qualificationFramework)}
             value={r.nfqLevel}
             onChange={(nfqLevel) => set({ nfqLevel })}
             placeholder="e.g. 8"

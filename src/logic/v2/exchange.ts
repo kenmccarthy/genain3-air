@@ -3,6 +3,7 @@
  * they return a new review with only the contribution or prompts list changed, and they report
  * how an incoming packet relates to what is already held so the UI can ask before replacing it.
  */
+import { GENERATOR } from '../../config/branding'
 import {
   ModuleSnapshotSchema,
   SCHEMA_VERSION_V2,
@@ -41,6 +42,7 @@ export function moduleContributionPacket(
   return {
     packetType: 'module-contribution',
     schemaVersion: SCHEMA_VERSION_V2,
+    generator: GENERATOR,
     sourceReviewId: review.id,
     revision: review.updatedAt,
     exportedAt,
@@ -55,6 +57,7 @@ export function programmePromptsPacket(
   return {
     packetType: 'programme-prompts',
     schemaVersion: SCHEMA_VERSION_V2,
+    generator: GENERATOR,
     sourceReviewId: review.id,
     revision: review.updatedAt,
     exportedAt,

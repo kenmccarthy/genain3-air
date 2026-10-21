@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Callout, Section } from '../../components/fields'
+import { Button, Callout, Section, CopyButton } from '../../components/fields'
 import { reviewPath } from '../../components/layout/nav'
 import { SUMMARY } from '../../content/v2/programme'
 import {
@@ -13,7 +12,6 @@ import { useProgramme } from './useProgramme'
 
 export function ProgrammeSummary() {
   const { review: r, set } = useProgramme()
-  const [copied, setCopied] = useState(false)
   const blocks = programmeSummary(r)
   const sectionFor: Record<string, string> = {
     context: 'context',
@@ -35,13 +33,7 @@ export function ProgrammeSummary() {
         <Button variant="primary" onClick={() => window.print()}>
           Print / save as PDF
         </Button>
-        <Button
-          onClick={() =>
-            void navigator.clipboard.writeText(programmeSummaryText(r)).then(() => setCopied(true))
-          }
-        >
-          {copied ? 'Copied' : 'Copy as text'}
-        </Button>
+        <CopyButton label="Copy as text" text={() => programmeSummaryText(r)} />
         <Button onClick={() => downloadJson(reviewFileName(r), r)}>Export review (JSON)</Button>
       </div>
 

@@ -1,3 +1,6 @@
 dist
 node_modules
 THIRD-PARTY-NOTICES.md
+# Exact files produced by the SETU edition and a frozen copy of its schema: never reformat.
+tests/fixtures/*.json
+tests/compat/setu/

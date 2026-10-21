@@ -29,9 +29,12 @@ const MAY_NAME_SETU = [
   '../src/content/about.ts',
   '../src/content/help.ts',
   '../src/store/library.ts',
+  '../src/model/v2/schema.ts',
   '../src/store/provenance.ts',
   '../src/store/importV2.ts',
+  '../src/store/unknownFields.ts',
   '../src/features/review/ProvenanceDialog.tsx',
+  '../src/features/home/ImportButton.tsx',
 ]
 
 describe('identity', () => {

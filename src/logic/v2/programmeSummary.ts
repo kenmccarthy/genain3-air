@@ -42,6 +42,15 @@ export function progressionLines(r: ProgrammeReview): string[] {
   })
 }
 
+/** e.g. "NFQ level 8", "RQF level 6" or "Level 6" when no framework is named. */
+export function qualificationLevel(
+  r: Pick<ProgrammeReview, 'nfqLevel' | 'qualificationFramework'>,
+) {
+  if (!r.nfqLevel.trim()) return ''
+  const framework = r.qualificationFramework.trim()
+  return framework ? `${framework} level ${r.nfqLevel}` : `Level ${r.nfqLevel}`
+}
+
 export function programmeSummary(r: ProgrammeReview): SummaryBlock[] {
   const lines = progressionLines(r)
   return [
@@ -50,9 +59,9 @@ export function programmeSummary(r: ProgrammeReview): SummaryBlock[] {
       heading: 'Programme context',
       lines: nonEmpty(
         r.title,
-        [r.nfqLevel && `NFQ level ${r.nfqLevel}`, r.duration, r.stages && `${r.stages} stages`]
-          .filter(Boolean)
-          .join(' · '),
+        r.institutionName && `Institution: ${r.institutionName}`,
+        // Programme duration is no longer shown, though imported reviews keep the stored value.
+        [qualificationLevel(r), r.stages && `${r.stages} stages`].filter(Boolean).join(' · '),
         r.academicUnit && `Faculty, school or department: ${r.academicUnit}`,
         r.coordinator && `Programme coordinator: ${r.coordinator}`,
         r.reviewDate && `Review date: ${r.reviewDate}`,

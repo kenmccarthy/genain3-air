@@ -48,3 +48,50 @@
 - Removed the default Vite favicon. There is no favicon until approved GenAI:N3 assets exist.
 - New tests: `tests/branding.test.ts` (attribution, SETU mentions, network name in full,
   metadata, feedback link, versions, licence files).
+
+## Stages 4 and 5 — Institutional flexibility, data preservation and recovery
+
+These two stages were implemented together because they change the same files.
+
+- **Schema** (still version 2; additive only):
+  - `institutionName` on both review types.
+  - `qualificationFramework` (default `NFQ`) beside the unchanged `nfqLevel`.
+  - `creditSystem` (default `ECTS`) beside `credits`.
+  - An optional, informational `generator` marker on reviews, bundles and packets.
+- **Unknown fields:** objects that hold review content are now "loose", so fields this edition does
+  not define are kept and exported again. They are reported on import (`store/unknownFields.ts`).
+  Module snapshots strip unknown fields, so contributions never share more than their summary
+  fields; tests caught and fixed two leaks while doing this.
+- **Institution Name:**
+  - The field is on both context pages.
+  - The last name typed is remembered in this browser (`store/preferences.ts`) and pre-fills new
+    reviews only.
+  - It appears in summaries, module snapshots, the structured statement export, and the printed
+    statement header above the programme title. It is never in the statement text.
+- **Import provenance** (`store/provenance.ts`, `features/review/ProvenanceDialog.tsx`):
+  - v1 files are given the SETU name.
+  - v2 reviews with no institution field are listed in an accessible dialog. The default is to
+    leave the name blank; there is one checkbox per review in a bundle; Escape or Cancel stops the
+    import.
+  - Names already in a file are kept.
+  - The generator marker is never used for this decision.
+- **Programme Duration:** still not asked for, and no longer shown in the programme summary or set
+  in the sample. Stored values are kept and exported again.
+- **Storage failures:**
+  - Saves now keep changes in memory first. A failed save marks the review unsaved, shows an alert
+    with "Export this review" (which includes the unsaved changes), never shows "Saved", and warns
+    before the tab closes.
+  - Library export includes unsaved reviews.
+  - Saving a review and the index is atomic, and so is importing a file or adding the sample: on
+    failure nothing is left half-written, and an import says "Nothing was imported because…".
+- **Other changes:**
+  - A shared `CopyButton` reports when the browser refuses clipboard access.
+  - Credit wording handles systems that already say "credits".
+- **Tests:**
+  - `tests/fixtures/` holds files produced by running the SETU edition's own code (v1 and v2
+    reviews, a bundle, both packet types), plus hand-made unknown-field and markup files.
+  - `tests/compat/setu/` holds a frozen copy of the SETU schema.
+  - New suites: `compat`, `provenance`, `preferences`, `storageFailure`, `institution`.
+- **Small departure from the plan:** in the provenance dialog, Escape cancels the whole import
+  (nothing is written) rather than meaning "leave blank". This is safer if someone presses Escape
+  expecting to back out; "Leave Institution Name blank" is still the default button.

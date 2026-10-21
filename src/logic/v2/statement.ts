@@ -520,6 +520,7 @@ export function statementExport(r: ProgrammeReview, exportedAt = new Date().toIS
     schemaVersion: 2 as const,
     exportedAt,
     sourceReviewId: r.id,
+    institution: r.institutionName,
     programme: st.programmeName || r.title,
     status: st.status || 'draft',
     approval:

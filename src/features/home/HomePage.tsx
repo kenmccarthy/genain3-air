@@ -5,7 +5,7 @@ import { reviewPath } from '../../components/layout/nav'
 import { HOME } from '../../content/v2/home'
 import type { ReviewKind } from '../../model/v2/schema'
 import { downloadJson, libraryFileName } from '../../store/download'
-import { libraryBundle } from '../../store/library'
+import { libraryBundle, storageErrorMessage } from '../../store/library'
 import { useWorkspace } from '../../store/workspace'
 import { ImportButton } from './ImportButton'
 import { saveSample } from './sample'
@@ -13,6 +13,7 @@ import { saveSample } from './sample'
 export function HomePage() {
   const entries = useWorkspace((s) => s.entries)
   const storage = useWorkspace((s) => s.storage)
+  const unsaved = useWorkspace((s) => s.unsaved)
   const refresh = useWorkspace((s) => s.refresh)
   const navigate = useNavigate()
   const [message, setMessage] = useState<{ text: string; tone: 'ok' | 'error' } | null>(null)
@@ -79,9 +80,16 @@ export function HomePage() {
           <ImportButton onMessage={(text, tone) => setMessage({ text, tone })} />
           <Button
             onClick={() => {
-              const p = saveSample(storage)
-              refresh()
-              navigate(reviewPath('programme', p.id))
+              try {
+                const p = saveSample(storage)
+                refresh()
+                navigate(reviewPath('programme', p.id))
+              } catch (e) {
+                setMessage({
+                  text: `The sample could not be added because ${storageErrorMessage(e)}.`,
+                  tone: 'error',
+                })
+              }
             }}
           >
             Explore sample
@@ -90,7 +98,9 @@ export function HomePage() {
           <LinkButton to="/reviews">Saved reviews ({entries.length})</LinkButton>
           <Button
             disabled={!entries.length}
-            onClick={() => downloadJson(libraryFileName(), libraryBundle(storage))}
+            onClick={() =>
+              downloadJson(libraryFileName(), libraryBundle(storage, undefined, unsaved))
+            }
             title="Download every review saved in this browser as one file"
           >
             Export data

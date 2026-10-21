@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 2,
+  "kind": "programme",
+  "id": "22222222-2222-4222-8222-222222222222",
+  "createdAt": "2026-10-01T09:00:00.000Z",
+  "updatedAt": "2026-10-01T10:00:00.000Z",
+  "institutionName": "<img src=x onerror=alert(1)>",
+  "title": "<script>alert('title')</script>",
+  "disciplineReflection": "javascript:alert(1) {{constructor.constructor('alert(1)')()}}",
+  "priorities": [{ "id": "p1", "text": "<b onmouseover=alert(1)>bold</b>" }]
+}

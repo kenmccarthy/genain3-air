@@ -3,6 +3,10 @@
 export const MODULE_CONTEXT = {
   lede: 'A few details to identify this module. The module title or code is enough to begin, and a programme review is not needed.',
   programmesHint: 'Optional. A module shared across programmes can list them all.',
+  creditsLabel: 'Credits (optional)',
+  creditSystemLabel: 'Credit system',
+  creditSystemHint:
+    'ECTS by default. Replace it with the system your credits use, if different (for example UK credits or US semester credits). No conversion is made.',
 }
 
 export const OUTCOMES = {

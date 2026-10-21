@@ -38,7 +38,7 @@ export function ModuleContributions() {
   const entries = useWorkspace((s) => s.entries)
   const [message, setMessage] = useState<{ text: string; tone: 'ok' | 'error' } | null>(null)
 
-  const add = (packet: ModuleContributionPacket) => {
+  const add = (packet: ModuleContributionPacket, note = '') => {
     const held = r.moduleContributions.find((c) => c.sourceReviewId === packet.sourceReviewId)
     const { apply, message } = confirmImport(
       matchContribution(r, packet),
@@ -47,13 +47,13 @@ export function ModuleContributions() {
       KEPT,
     )
     if (apply) replace(applyContribution(r, packet))
-    setMessage({ text: message, tone: 'ok' })
+    setMessage({ text: message + note, tone: 'ok' })
   }
 
   const fromFile = (text: string) => {
     const result = contributionFromImport(parseImport(text))
     if (!result.ok) setMessage({ text: result.error, tone: 'error' })
-    else add(result.packet)
+    else add(result.packet, result.note)
   }
 
   const savedModules = entries.filter((e) => e.kind === 'module')

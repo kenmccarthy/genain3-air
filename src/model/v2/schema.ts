@@ -4,6 +4,11 @@
  *
  * Every review carries its own id, timestamps, schema version and status, and is stored on its
  * own, so starting one review never overwrites another.
+ *
+ * This edition keeps schema version 2, shared with the SETU edition, and only adds optional
+ * fields, so files still move between the editions (see docs/compatibility.md). Objects that hold
+ * review content are "loose": fields this edition does not know about, for example from a newer
+ * SETU edition, are kept unchanged and exported again instead of being dropped.
  */
 import { z } from 'zod'
 import { PROGRESSION_PHASES, STATEMENT_APPROACHES } from '../../content/scales'
@@ -31,7 +36,7 @@ const ReviewStatusSchema = z.enum(['in_progress', 'complete']).default('in_progr
  * Data carried over from a version 1 review that has no v2 equivalent, or whose rating could not
  * be safely mapped. Kept verbatim and shown read-only; never reinterpreted.
  */
-export const LegacySchema = z.object({
+export const LegacySchema = z.looseObject({
   source: z.literal('v1'),
   sourceReviewId: z.string(),
   migratedAt: z.string(),
@@ -42,6 +47,13 @@ export const LegacySchema = z.object({
 })
 export type Legacy = z.infer<typeof LegacySchema>
 
+/**
+ * Which application last saved or exported a file. Informational only: it is not proof of where
+ * a file came from (files can be edited, and older files have none), so no decision relies on it.
+ */
+export const GeneratorSchema = z.looseObject({ app: z.string(), version: z.string() })
+export type Generator = z.infer<typeof GeneratorSchema>
+
 const envelope = {
   schemaVersion: z.literal(SCHEMA_VERSION_V2).default(SCHEMA_VERSION_V2),
   id: z.string(),
@@ -49,10 +61,13 @@ const envelope = {
   updatedAt: z.string(),
   status: ReviewStatusSchema,
   legacy: LegacySchema.optional(),
+  generator: GeneratorSchema.optional(),
+  /** Optional; belongs to this review only. Shown in summaries and the statement header. */
+  institutionName: str(),
 }
 
 /** A short list item with a stable id (priorities, next steps, questions for module teams). */
-export const ListItemSchema = z.object({ id: z.string(), text: str() })
+export const ListItemSchema = z.looseObject({ id: z.string(), text: str() })
 export type ListItem = z.infer<typeof ListItemSchema>
 
 const phase = z.enum(PROGRESSION_PHASES.map((p) => p.value) as [string, ...string[]])
@@ -66,10 +81,10 @@ export const AdvancedAssessmentSchema = V1AssessmentSchema.omit({
   semester: true,
   weighting: true,
   type: true,
-})
+}).loose()
 export type AdvancedAssessment = z.infer<typeof AdvancedAssessmentSchema>
 
-export const ModuleAssessmentSchema = z.object({
+export const ModuleAssessmentSchema = z.looseObject({
   id: z.string(),
   title: str(),
   weighting: str(),
@@ -84,14 +99,14 @@ export const ModuleAssessmentSchema = z.object({
 export type ModuleAssessment = z.infer<typeof ModuleAssessmentSchema>
 
 /** A question or priority sent by a programme team, imported into a module review. */
-export const ProgrammePromptSchema = z.object({
+export const ProgrammePromptSchema = z.looseObject({
   id: z.string(),
   kind: z.enum(['question', 'priority']).default('question'),
   text: str(),
 })
 export type ProgrammePrompt = z.infer<typeof ProgrammePromptSchema>
 
-export const ImportedProgrammePromptsSchema = z.object({
+export const ImportedProgrammePromptsSchema = z.looseObject({
   /** Id of the programme review that sent these prompts. */
   sourceReviewId: z.string(),
   revision: z.string(),
@@ -103,14 +118,17 @@ export const ImportedProgrammePromptsSchema = z.object({
 })
 export type ImportedProgrammePrompts = z.infer<typeof ImportedProgrammePromptsSchema>
 
-export const ModuleReviewSchema = z.object({
+export const ModuleReviewSchema = z.looseObject({
   ...envelope,
   kind: z.literal('module'),
   // Context
   title: str(),
   code: str(),
   stage: z.number().int().min(1).default(1),
+  /** The credit value as entered, e.g. "10". No conversion between systems. */
   credits: str(),
+  /** The credit system `credits` is counted in. Files without it are ECTS. */
+  creditSystem: z.string().default('ECTS'),
   coordinator: str(),
   associatedProgrammes: str(),
   reviewDate: str(),
@@ -119,7 +137,7 @@ export const ModuleReviewSchema = z.object({
   outcomesCapabilities: str(),
   outcomesChanges: str(),
   /** Optional advanced review: individual outcomes with v1 ratings. */
-  learningOutcomes: z.array(LearningOutcomeSchema).default([]),
+  learningOutcomes: z.array(LearningOutcomeSchema.loose()).default([]),
   // S2 Teaching and learning
   ltOpportunities: scale(LT_OPPORTUNITIES),
   responsibleEngagement: scale(RESPONSIBLE_ENGAGEMENT),
@@ -140,12 +158,17 @@ export type ModuleReview = z.infer<typeof ModuleReviewSchema>
 
 // ── Exchange: module → programme ─────────────────────────────────────────────────────────────
 
-/** The subset of a module review a programme team sees. */
+/**
+ * The subset of a module review a programme team sees. Unlike the review itself it keeps only the
+ * fields listed here (`strip`), so nothing else in a module review is ever shared by an export.
+ */
 export const ModuleSnapshotSchema = ModuleReviewSchema.pick({
+  institutionName: true,
   title: true,
   code: true,
   stage: true,
   credits: true,
+  creditSystem: true,
   coordinator: true,
   associatedProgrammes: true,
   reviewDate: true,
@@ -160,28 +183,32 @@ export const ModuleSnapshotSchema = ModuleReviewSchema.pick({
   nextSteps: true,
   alignment: true,
   contribution: true,
-}).extend({
-  assessments: z
-    .array(
-      ModuleAssessmentSchema.pick({
-        id: true,
-        title: true,
-        weighting: true,
-        type: true,
-        semester: true,
-        aiRole: true,
-        confidence: true,
-        action: true,
-        rationale: true,
-      }),
-    )
-    .default([]),
 })
+  .extend({
+    nextSteps: z.array(ListItemSchema.strip()).default([]),
+    assessments: z
+      .array(
+        ModuleAssessmentSchema.pick({
+          id: true,
+          title: true,
+          weighting: true,
+          type: true,
+          semester: true,
+          aiRole: true,
+          confidence: true,
+          action: true,
+          rationale: true,
+        }).strip(),
+      )
+      .default([]),
+  })
+  .strip()
 export type ModuleSnapshot = z.infer<typeof ModuleSnapshotSchema>
 
 export const ModuleContributionPacketSchema = z.object({
   packetType: z.literal('module-contribution'),
   schemaVersion: z.literal(SCHEMA_VERSION_V2),
+  generator: GeneratorSchema.optional(),
   /** Id of the module review this came from: the stable key for duplicate detection. */
   sourceReviewId: z.string(),
   /** The module review's updatedAt when exported; a later value is a newer revision. */
@@ -192,7 +219,7 @@ export const ModuleContributionPacketSchema = z.object({
 export type ModuleContributionPacket = z.infer<typeof ModuleContributionPacketSchema>
 
 /** A module contribution as held by a programme review. */
-export const ModuleContributionSchema = z.object({
+export const ModuleContributionSchema = z.looseObject({
   sourceReviewId: z.string(),
   revision: z.string(),
   importedAt: z.string(),
@@ -205,7 +232,7 @@ export type ModuleContribution = z.infer<typeof ModuleContributionSchema>
 
 // ── Statement ────────────────────────────────────────────────────────────────────────────────
 
-export const StatementV2Schema = z.object({
+export const StatementV2Schema = z.looseObject({
   approach: scale(STATEMENT_APPROACHES),
   approachOther: str(),
   approachRationale: str(),
@@ -230,12 +257,16 @@ export type StatementV2 = z.infer<typeof StatementV2Schema>
 
 // ── Programme review ─────────────────────────────────────────────────────────────────────────
 
-export const ProgrammeReviewSchema = z.object({
+export const ProgrammeReviewSchema = z.looseObject({
   ...envelope,
   kind: z.literal('programme'),
   // Context
   title: str(),
+  /** The qualification framework `nfqLevel` refers to. Files without it are NFQ. */
+  qualificationFramework: z.string().default('NFQ'),
+  /** The level within `qualificationFramework` (the key keeps its original name). Optional. */
   nfqLevel: str(),
+  /** No longer asked for; kept so imported reviews keep the value and export it again. */
   duration: str(),
   coordinator: str(),
   academicUnit: str(),
@@ -245,9 +276,9 @@ export const ProgrammeReviewSchema = z.object({
   disciplineReflection: str(),
   // S1 Graduate capabilities
   independentText: str(),
-  independentCapabilities: z.array(CapabilitySchema).default([]),
+  independentCapabilities: z.array(CapabilitySchema.loose()).default([]),
   aiEnabledText: str(),
-  aiEnabledCapabilities: z.array(CapabilitySchema).default([]),
+  aiEnabledCapabilities: z.array(CapabilitySchema.loose()).default([]),
   outcomesAdequate: scale(ADDRESSED),
   outcomesComments: str(),
   // S2 Progression: key `${capabilityId}:${stage}` → phases
@@ -281,6 +312,7 @@ export type ProgrammeReview = z.infer<typeof ProgrammeReviewSchema>
 export const ProgrammePromptsPacketSchema = z.object({
   packetType: z.literal('programme-prompts'),
   schemaVersion: z.literal(SCHEMA_VERSION_V2),
+  generator: GeneratorSchema.optional(),
   sourceReviewId: z.string(),
   revision: z.string(),
   exportedAt: z.string(),
@@ -301,6 +333,7 @@ export type ReviewKind = AnyReview['kind']
 export const LibraryBundleSchema = z.object({
   packetType: z.literal('library'),
   schemaVersion: z.literal(SCHEMA_VERSION_V2),
+  generator: GeneratorSchema.optional(),
   exportedAt: z.string(),
   reviews: z.array(AnyReviewSchema).default([]),
 })

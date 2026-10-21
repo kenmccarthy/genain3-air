@@ -1,0 +1,45 @@
+{
+  "packetType": "module-contribution",
+  "schemaVersion": 2,
+  "sourceReviewId": "64156a79-f176-4bb3-ae7e-d276401585db",
+  "revision": "2026-10-03T09:00:00.000Z",
+  "exportedAt": "2026-10-03T09:30:00.000Z",
+  "snapshot": {
+    "title": "Data Analytics for Business",
+    "code": "BUS301",
+    "stage": 3,
+    "credits": "5",
+    "coordinator": "Dr B. Example",
+    "associatedProgrammes": "BSc (Hons) in Business Information Systems",
+    "reviewDate": "2026-09-15",
+    "outcomesAppropriate": "some_review",
+    "outcomesChanges": "",
+    "ltOpportunities": "enhance",
+    "responsibleEngagement": "",
+    "ltEnhance": "",
+    "workingWell": "Weekly labs with explicit AI-use guidance.",
+    "enhance": "",
+    "programmeDiscussion": "",
+    "nextSteps": [
+      {
+        "id": "92fbae4b-2322-48b1-a7e4-2514d123a3c4",
+        "text": "Add a short viva to the project."
+      }
+    ],
+    "alignment": "",
+    "contribution": "",
+    "assessments": [
+      {
+        "id": "cae32103-d031-4bb4-a94d-16d8907d3976",
+        "title": "Group project",
+        "weighting": "60%",
+        "type": "Project",
+        "semester": "1",
+        "aiRole": "integrated",
+        "confidence": "some_questions",
+        "action": "clarify",
+        "rationale": "AI use mirrors practice."
+      }
+    ]
+  }
+}

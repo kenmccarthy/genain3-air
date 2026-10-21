@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 1,
+  "id": "23782494-affb-4aa8-a576-afb16d4e2eef",
+  "createdAt": "2026-10-21T11:48:17.231Z",
+  "updatedAt": "2026-10-21T11:48:17.231Z",
+  "programme": {
+    "title": "BSc (Hons) in Business Information Systems",
+    "nfqLevel": "8",
+    "duration": "4 years",
+    "coordinator": "Dr A. Example",
+    "academicUnit": "School of Business",
+    "reviewDate": "2026-09-01",
+    "team": "Programme board members and module leaders",
+    "stages": 4,
+    "disciplineReflection": "reshaping analyst and consultancy roles: routine reporting, documentation and first-draft code are increasingly automated, while employers expect graduates to specify, evaluate and govern AI-enabled systems",
+    "enduringCapabilities": [
+      {
+        "id": "enduring:disciplinary-knowledge",
+        "label": "Disciplinary knowledge",
+        "custom": false
+      },
+      {
+        "id": "enduring:critical-thinking",
+        "label": "Critical thinking",
+        "custom": false
+      },
+      {
+        "id": "enduring:communication",
+        "label": "Communication",
+        "custom": false
+      },
+      {
+        "id": "enduring:professional-judgement",
+        "label": "Professional judgement",
+        "custom": false
+      },
+      {
+        "id": "enduring:problem-solving",
+        "label": "Problem solving",
+        "custom": false
+      }
+    ],
+    "protectedCapabilities": [
+      {
+        "id": "protected:foundational-disciplinary-knowledge",
+        "label": "Foundational disciplinary knowledge",
+        "custom": false
+      },
+      {
+        "id": "protected:critical-thinking",
+        "label": "Critical thinking",
+        "custom": false
+      },
+      {
+        "id": "protected:professional-judgement",
+        "label": "Professional judgement",
+        "custom": false
+      },
+      {
+        "id": "protected:interpersonal-communication",
+        "label": "Interpersonal communication",
+        "custom": false
+      }
+    ],
+    "protectedNotes": "invigilated examinations in stage 1 and 2, observed client presentations and an oral defence of the final-year project",
+    "humanAiCapabilities": [
+      {
+        "id": "human-ai:selecting-appropriate-ai-tools",
+        "label": "Selecting appropriate AI tools",
+        "custom": false
+      },
+      {
+        "id": "human-ai:evaluating-ai-generated-outputs",
+        "label": "Evaluating AI-generated outputs",
+        "custom": false
+      },
+      {
+        "id": "human-ai:responsible-and-ethical-ai-use",
+        "label": "Responsible and ethical AI use",
+        "custom": false
+      },
+      {
+        "id": "human-ai:integrating-ai-into-disciplinary-workflows",
+        "label": "Integrating AI into disciplinary workflows",
+        "custom": false
+      },
+      {
+        "id": "human-ai:documenting-or-communicating-ai-use",
+        "label": "Documenting or communicating AI use",
+        "custom": false
+      }
+    ],
+    "ploCheckpoint": "mostly",
+    "ploAction": "Add an explicit programme outcome on responsible AI-enabled practice.",
+    "progression": {
+      "literacy:1": [
+        "introduced",
+        "practised"
+      ],
+      "ethics:1": [
+        "introduced"
+      ],
+      "genai:2": [
+        "introduced",
+        "practised"
+      ],
+      "evaluation:2": [
+        "introduced"
+      ],
+      "evaluation:3": [
+        "developed"
+      ],
+      "discipline:3": [
+        "introduced",
+        "practised"
+      ],
+      "oversight:3": [
+        "introduced"
+      ],
+      "discipline:4": [
+        "developed",
+        "demonstrated"
+      ],
+      "oversight:4": [
+        "demonstrated"
+      ],
+      "agentic:4": [
+        "introduced"
+      ]
+    },
+    "progressionRating": "adequate",
+    "progressionNotes": "",
+    "coherenceAnswers": {
+      "communicated": "Module descriptors use different wording; a common AI position statement is needed in every assessment brief.",
+      "contradictory": "Stage 2 students reported being told AI was banned in one module and required in another without explanation."
+    },
+    "coherenceRating": "review",
+    "coherenceObservations": "The portfolio relies heavily on individual reports in stages 2 and 3."
+  },
+  "modules": [
+    {
+      "id": "73027cd2-d20b-470a-833d-1e9edf405235",
+      "title": "Introduction to Information Systems",
+      "code": "BIS101",
+      "stage": 1,
+      "credits": "10",
+      "leader": "Dr B. Example",
+      "programmes": "",
+      "contextReflection": "Students now arrive using AI tools daily; the module must build foundational literacy and expectations early.",
+      "learningOutcomes": [
+        {
+          "id": "ad6e292d-6812-4ad8-9f51-aede6f17f792",
+          "text": "Explain the role of information systems in organisations.",
+          "rating": "appropriate",
+          "comments": ""
+        },
+        {
+          "id": "e6ad124c-893b-4e65-aca9-2f5671188220",
+          "text": "Use standard office and collaboration tools to produce business documents.",
+          "rating": "significant",
+          "comments": "Largely automated by AI; reframe around evaluating and adapting AI-generated documents."
+        }
+      ],
+      "outcomesComments": "",
+      "ltRating": "adequate",
+      "ltActions": "Add a two-week AI literacy block with hands-on evaluation of AI outputs.",
+      "assessments": [
+        {
+          "id": "b0acc616-e229-4ee9-ba75-7503b2efafe9",
+          "title": "End-of-semester examination",
+          "semester": "1",
+          "weighting": "60",
+          "type": "Written exam (invigilated)",
+          "outcomeIds": [
+            "ad6e292d-6812-4ad8-9f51-aede6f17f792"
+          ],
+          "purpose": "Foundational disciplinary knowledge and understanding.",
+          "aiCanDo": [
+            "complete"
+          ],
+          "aiCanDoNotes": "",
+          "vulnerability": "low",
+          "vulnerabilityReason": "Invigilated, closed-book.",
+          "position": "restricted",
+          "positionRationale": "Foundational knowledge must be held independently.",
+          "assurance": "high",
+          "assuranceEvidence": [
+            "observation"
+          ],
+          "assuranceNotes": "",
+          "protectedCapabilities": [
+            {
+              "id": "protected:foundational-disciplinary-knowledge",
+              "label": "Foundational disciplinary knowledge",
+              "custom": false
+            }
+          ],
+          "humanAgencyNotes": "",
+          "humanAgencyEvidence": "yes",
+          "processApproaches": [],
+          "processDecision": "sufficient",
+          "processAction": "",
+          "authenticityRating": "adequate",
+          "authenticityNotes": "",
+          "equityIssues": "",
+          "equityActions": "",
+          "practicalityRating": "sustainable",
+          "practicalityNotes": "",
+          "aiCapabilityDeveloped": ""
+        },
+        {
+          "id": "e93f4a5f-618d-48ff-af58-24fb84f0e884",
+          "title": "Business report",
+          "semester": "2",
+          "weighting": "40",
+          "type": "Report",
+          "outcomeIds": [
+            "e6ad124c-893b-4e65-aca9-2f5671188220"
+          ],
+          "purpose": "Apply IS concepts to a small organisation and communicate recommendations.",
+          "aiCanDo": [
+            "complete",
+            "sections",
+            "research",
+            "rewrite"
+          ],
+          "aiCanDoNotes": "",
+          "vulnerability": "critical",
+          "vulnerabilityReason": "A generic 2,000-word report on a case study can be fully generated.",
+          "position": "limited",
+          "positionRationale": "Students may use AI for structure and language but must interpret the specific organisation.",
+          "assurance": "low",
+          "assuranceEvidence": [],
+          "assuranceNotes": "No process evidence and no dialogue with the student.",
+          "protectedCapabilities": [
+            {
+              "id": "protected:critical-thinking",
+              "label": "Critical thinking",
+              "custom": false
+            }
+          ],
+          "humanAgencyNotes": "",
+          "humanAgencyEvidence": "partially",
+          "processApproaches": [
+            "staged",
+            "ai_records"
+          ],
+          "processDecision": "redesign",
+          "processAction": "Replace with a staged, contextualised report on a local organisation plus a short viva.",
+          "authenticityRating": "review",
+          "authenticityNotes": "Report writing with AI is authentic practice; the assessment should test judgement, not drafting.",
+          "equityIssues": "Not all students have paid AI subscriptions.",
+          "equityActions": "Use the institutional AI tool for all AI-permitted work.",
+          "practicalityRating": "adjust",
+          "practicalityNotes": "Viva adds marking time for a cohort of 120.",
+          "aiCapabilityDeveloped": ""
+        }
+      ]
+    },
+    {
+      "id": "c6aefe75-f189-4db0-864c-6b5262b2c0b7",
+      "title": "Systems Analysis and Design",
+      "code": "BIS301",
+      "stage": 3,
+      "credits": "10",
+      "leader": "Dr C. Example",
+      "programmes": "",
+      "contextReflection": "AI can generate requirements documents and models; the skill now lies in eliciting, validating and governing them.",
+      "learningOutcomes": [
+        {
+          "id": "64468fe1-011e-49a9-99fc-19e8ee6c36f7",
+          "text": "Elicit and model requirements for an information system.",
+          "rating": "minor",
+          "comments": ""
+        }
+      ],
+      "outcomesComments": "",
+      "ltRating": "strong",
+      "ltActions": "",
+      "assessments": [
+        {
+          "id": "6ea93c77-e22e-4b0d-b3ee-4229f37a7b4d",
+          "title": "Client project with presentation",
+          "semester": "2",
+          "weighting": "100",
+          "type": "Group project",
+          "outcomeIds": [
+            "64468fe1-011e-49a9-99fc-19e8ee6c36f7"
+          ],
+          "purpose": "Elicit real client requirements, produce a design and defend it.",
+          "aiCanDo": [
+            "sections",
+            "ideas",
+            "simulate",
+            "feedback"
+          ],
+          "aiCanDoNotes": "AI is used intentionally to draft and critique models.",
+          "vulnerability": "high",
+          "vulnerabilityReason": "Documentation can be generated, but the client interaction and defence cannot.",
+          "position": "integrated",
+          "positionRationale": "Analysts use AI in practice; students must show they can direct and evaluate it.",
+          "assurance": "high",
+          "assuranceEvidence": [
+            "defence",
+            "authentic",
+            "staged",
+            "dialogue"
+          ],
+          "assuranceNotes": "",
+          "protectedCapabilities": [
+            {
+              "id": "protected:professional-judgement",
+              "label": "Professional judgement",
+              "custom": false
+            },
+            {
+              "id": "protected:interpersonal-communication",
+              "label": "Interpersonal communication",
+              "custom": false
+            }
+          ],
+          "humanAgencyNotes": "",
+          "humanAgencyEvidence": "yes",
+          "processApproaches": [
+            "staged",
+            "ai_records",
+            "defence"
+          ],
+          "processDecision": "sufficient",
+          "processAction": "",
+          "authenticityRating": "strong",
+          "authenticityNotes": "",
+          "equityIssues": "",
+          "equityActions": "",
+          "practicalityRating": "sustainable",
+          "practicalityNotes": "",
+          "aiCapabilityDeveloped": "Integrating AI into analysis workflows and documenting its use"
+        }
+      ]
+    }
+  ],
+  "synthesis": {
+    "dashboard": {},
+    "patternNotes": {},
+    "discussion": {
+      "doing_well": "Stage 3 and 4 project work already integrates AI with strong assurance through client contact and defence.",
+      "vulnerabilities": "Stage 1 and 2 individual reports.",
+      "independent": "foundational knowledge and client-facing communication",
+      "intentional_ai": "analysis, design and documentation work from stage 3 onwards",
+      "monitor": "Agentic tools for end-to-end system generation."
+    },
+    "actions": [
+      {
+        "id": "b2b8be93-af23-45a7-a42e-9344f75d880c",
+        "text": "Adopt the common AI position categories in every assessment brief.",
+        "category": "align",
+        "scope": "programme",
+        "moduleId": "",
+        "priority": "high",
+        "owner": "Programme board",
+        "timescale": "Before next academic year",
+        "reviewPoint": "Annual monitoring"
+      },
+      {
+        "id": "d0b242c4-86cc-4609-8c92-10aac463ce14",
+        "text": "Redesign the stage 1 business report as a staged, contextualised task with a short viva.",
+        "category": "redesign",
+        "scope": "module",
+        "moduleId": "73027cd2-d20b-470a-833d-1e9edf405235",
+        "priority": "high",
+        "owner": "Module leader",
+        "timescale": "Semester 2",
+        "reviewPoint": "Exam board"
+      },
+      {
+        "id": "e022defd-84a8-4a7f-9e3d-a8cb4e145952",
+        "text": "Keep the stage 3 client project as the model of AI-integrated assessment.",
+        "category": "maintain",
+        "scope": "module",
+        "moduleId": "c6aefe75-f189-4db0-864c-6b5262b2c0b7",
+        "priority": "low",
+        "owner": "Module leader",
+        "timescale": "Ongoing",
+        "reviewPoint": "Annual monitoring"
+      },
+      {
+        "id": "44ba9119-48c1-44cc-a81b-2bb839142327",
+        "text": "Watch developments in agentic tools that could complete full system builds.",
+        "category": "monitor",
+        "scope": "programme",
+        "moduleId": "",
+        "priority": "medium",
+        "owner": "Programme coordinator",
+        "timescale": "Ongoing",
+        "reviewPoint": "Annual monitoring"
+      }
+    ],
+    "overallPosition": ""
+  },
+  "statement": {
+    "approach": "selectively_integrated",
+    "approachOther": "",
+    "approachRationale": "AI is integrated where it mirrors professional analyst practice and restricted where foundational knowledge or client communication must be demonstrated independently.",
+    "sections": {},
+    "evidencePosition": {},
+    "evidenceSupport": {},
+    "agreedDate": "",
+    "nextReviewDate": "2027-09-01"
+  }
+}

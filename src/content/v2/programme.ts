@@ -9,6 +9,19 @@ export const PROGRAMME_CONTEXT = {
     'Optional. A sentence or two is enough; it helps introduce the Programme AI Integration Statement.',
   stagesHint:
     'Stages are points of curriculum progression used for the AI capability progression map. They need not correspond to academic years.',
+  frameworkLabel: 'Qualification framework',
+  frameworkHint:
+    'NFQ (Ireland’s National Framework of Qualifications) by default. Replace it with the framework you use, if different, or leave it blank.',
+  levelLabel: (framework: string) =>
+    framework.trim().toUpperCase() === 'NFQ'
+      ? 'NFQ level (optional)'
+      : 'Qualification level (optional)',
+}
+
+/** Shared by both reviews' context pages. */
+export const INSTITUTION = {
+  label: 'Institution name (optional)',
+  hint: 'Belongs to this review only and appears in its summary and exports. The name you enter is remembered in this browser for new reviews; it is not sent anywhere.',
 }
 
 export const CAPABILITIES = {

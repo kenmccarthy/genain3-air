@@ -78,6 +78,7 @@ export function Button({
   className = '',
   disabled,
   title,
+  autoFocus,
 }: {
   children: React.ReactNode
   onClick?: () => void
@@ -86,6 +87,7 @@ export function Button({
   className?: string
   disabled?: boolean
   title?: string
+  autoFocus?: boolean
 }) {
   const styles = {
     primary: 'bg-brand-600 text-white hover:bg-brand-700 border-brand-700',
@@ -99,6 +101,7 @@ export function Button({
       onClick={onClick}
       disabled={disabled}
       title={title}
+      autoFocus={autoFocus}
       className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50 ${styles} ${className}`}
     >
       {children}

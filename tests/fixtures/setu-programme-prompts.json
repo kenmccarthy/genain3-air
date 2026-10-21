@@ -1,0 +1,15 @@
+{
+  "packetType": "programme-prompts",
+  "schemaVersion": 2,
+  "sourceReviewId": "c8c41f1c-344d-402a-8a0a-c58031ff3c64",
+  "revision": "2026-10-02T10:00:00.000Z",
+  "exportedAt": "2026-10-02T11:00:00.000Z",
+  "programmeTitle": "BSc (Hons) in Business Information Systems",
+  "prompts": [
+    {
+      "id": "07325cca-f059-4b53-b5ba-850c9f139e3f",
+      "kind": "priority",
+      "text": "Review AI guidance for stage 2 group projects."
+    }
+  ]
+}

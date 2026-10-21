@@ -37,6 +37,15 @@ function assessmentDetails(a: ModuleAssessment) {
 export const moduleTitle = (m: Pick<ModuleReview, 'code' | 'title'>) =>
   [m.code, m.title].filter((x) => x.trim()).join(' ') || 'Untitled module'
 
+/** e.g. "10 ECTS credits", or "10 credits" when no credit system is named. */
+export function creditsText(m: Pick<ModuleReview, 'credits' | 'creditSystem'>) {
+  if (!m.credits.trim()) return ''
+  const system = m.creditSystem.trim()
+  // "UK credits" or "US semester credits" already say "credits".
+  const unit = /\bcredits?$/i.test(system) ? '' : 'credits'
+  return [m.credits.trim(), system, unit].filter(Boolean).join(' ')
+}
+
 export function moduleSummary(m: ModuleReview): SummaryBlock[] {
   const as = m.assessments
   const discussAssessments = as
@@ -52,7 +61,8 @@ export function moduleSummary(m: ModuleReview): SummaryBlock[] {
       heading: 'Module details',
       lines: nonEmpty(
         moduleTitle(m),
-        [`Stage ${m.stage}`, m.credits && `${m.credits} credits`].filter(Boolean).join(' · '),
+        m.institutionName && `Institution: ${m.institutionName}`,
+        [`Stage ${m.stage}`, creditsText(m)].filter(Boolean).join(' · '),
         m.coordinator && `Module coordinator: ${m.coordinator}`,
         m.associatedProgrammes && `Programme(s): ${m.associatedProgrammes}`,
         m.reviewDate && `Review date: ${m.reviewDate}`,

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useMatch } from 'react-router-dom'
 import { useWorkspace } from '../../store/workspace'
 import { downloadJson, reviewFileName } from '../../store/download'
@@ -15,7 +15,18 @@ export function Shell() {
   const current = useWorkspace((s) => s.current)
   const persistent = useWorkspace((s) => s.persistent)
   const entries = useWorkspace((s) => s.entries)
+  const unsaved = useWorkspace((s) => s.unsaved)
+  const saveError = useWorkspace((s) => s.saveError)
   const location = useLocation()
+  const unsavedCount = Object.keys(unsaved).length
+
+  // While changes exist only in memory, ask before the tab is closed or reloaded.
+  useEffect(() => {
+    if (!unsavedCount) return
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault()
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [unsavedCount])
   const [menuOpen, setMenuOpen] = useState(false)
 
   const inReview =
@@ -131,9 +142,11 @@ export function Shell() {
           <p className="min-w-0 flex-1 truncate text-xs text-slate-500" aria-live="polite">
             {!inReview
               ? ''
-              : !entries.some((e) => e.id === inReview.id)
-                ? 'Not saved yet: the review is saved as soon as you enter something'
-                : `${persistent ? 'Saved in this browser' : 'Not saved: this browser is blocking storage'} · last change ${new Date(inReview.updatedAt).toLocaleString()}`}
+              : unsaved[inReview.id]
+                ? 'Latest changes NOT saved: export this review now'
+                : !entries.some((e) => e.id === inReview.id)
+                  ? 'Not saved yet: the review is saved as soon as you enter something'
+                  : `${persistent ? 'Saved in this browser' : 'Not saved: this browser is blocking storage'} · last change ${new Date(inReview.updatedAt).toLocaleString()}`}
           </p>
           {inReview && (
             <Button onClick={() => downloadJson(reviewFileName(inReview), inReview)}>
@@ -152,6 +165,27 @@ export function Shell() {
             This browser is blocking local storage, so your work will be lost when you close this
             tab. Export your review before leaving.
           </p>
+        )}
+        {persistent && unsavedCount > 0 && (
+          <div
+            role="alert"
+            className="no-print flex flex-wrap items-center gap-x-3 gap-y-2 bg-rose-50 px-4 py-2 text-sm text-rose-900"
+          >
+            <p className="min-w-0 flex-1">
+              <strong>Your latest changes have not been saved</strong> because {saveError}.{' '}
+              {inReview && unsaved[inReview.id]
+                ? 'They are still open here. Export this review now to avoid losing work.'
+                : `${unsavedCount === 1 ? 'A review has' : `${unsavedCount} reviews have`} unsaved changes. Use Export data on the home page now to avoid losing work.`}
+            </p>
+            {inReview && unsaved[inReview.id] && (
+              <Button
+                variant="primary"
+                onClick={() => downloadJson(reviewFileName(inReview), inReview)}
+              >
+                Export this review
+              </Button>
+            )}
+          </div>
         )}
         <main
           id="main"

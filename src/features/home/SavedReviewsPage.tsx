@@ -16,6 +16,7 @@ const entryTitle = (e: IndexEntry) =>
 export function SavedReviewsPage() {
   const entries = useWorkspace((s) => s.entries)
   const storage = useWorkspace((s) => s.storage)
+  const unsaved = useWorkspace((s) => s.unsaved)
   const [message, setMessage] = useState<{ text: string; tone: 'ok' | 'error' } | null>(null)
 
   return (
@@ -36,7 +37,9 @@ export function SavedReviewsPage() {
         <ImportButton onMessage={(text, tone) => setMessage({ text, tone })} />
         <Button
           disabled={!entries.length}
-          onClick={() => downloadJson(libraryFileName(), libraryBundle(storage))}
+          onClick={() =>
+            downloadJson(libraryFileName(), libraryBundle(storage, undefined, unsaved))
+          }
         >
           Export all reviews
         </Button>

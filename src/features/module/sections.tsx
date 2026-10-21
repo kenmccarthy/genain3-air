@@ -15,6 +15,7 @@ import {
 } from '../../components/fields'
 import { OUTCOME_REVIEW } from '../../content/scales'
 import { ASSESSMENT, MODULE_CONTEXT, OUTCOMES, REFLECTION, TEACHING } from '../../content/v2/module'
+import { INSTITUTION } from '../../content/v2/programme'
 import {
   LT_OPPORTUNITIES,
   MODULE_ALIGNMENT,
@@ -23,6 +24,7 @@ import {
 } from '../../content/v2/scales'
 import { moduleLegacy } from '../../logic/v2/legacy'
 import { MAX_PRIORITIES, newModuleAssessment, uid } from '../../model/v2/defaults'
+import { useWorkspace } from '../../store/workspace'
 import { LegacyPanel } from '../review/LegacyPanel'
 import { AssessmentCard } from './AssessmentCard'
 import { useModuleReview } from './useModuleReview'
@@ -34,13 +36,25 @@ function useLegacy() {
 
 export function ModuleContext() {
   const { review: m, set } = useModuleReview()
+  const setInstitution = useWorkspace((s) => s.setInstitution)
   const legacy = useLegacy()
   return (
     <>
       <Section title="About the module" intro={MODULE_CONTEXT.lede}>
         <div className="grid gap-4 sm:grid-cols-2">
+          <TextInput
+            label={INSTITUTION.label}
+            hint={INSTITUTION.hint}
+            value={m.institutionName}
+            onChange={setInstitution}
+            className="sm:col-span-2"
+          />
           <TextInput label="Module title" value={m.title} onChange={(title) => set({ title })} />
-          <TextInput label="Module code" value={m.code} onChange={(code) => set({ code })} />
+          <TextInput
+            label="Module code (optional)"
+            value={m.code}
+            onChange={(code) => set({ code })}
+          />
           <NumberInput
             label="Stage"
             value={m.stage}
@@ -49,10 +63,16 @@ export function ModuleContext() {
             onChange={(n) => set({ stage: Math.min(8, Math.max(1, Math.round(n))) })}
           />
           <TextInput
-            label="Credits"
+            label={MODULE_CONTEXT.creditsLabel}
             value={m.credits}
             onChange={(credits) => set({ credits })}
             placeholder="e.g. 10"
+          />
+          <TextInput
+            label={MODULE_CONTEXT.creditSystemLabel}
+            hint={MODULE_CONTEXT.creditSystemHint}
+            value={m.creditSystem}
+            onChange={(creditSystem) => set({ creditSystem })}
           />
           <TextInput
             label="Module coordinator"

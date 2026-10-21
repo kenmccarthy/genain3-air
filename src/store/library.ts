@@ -7,7 +7,7 @@
  * never reads or writes another edition's reviews. Reviews move between editions only as files.
  */
 import { z } from 'zod'
-import { STORAGE_PREFIX } from '../config/branding'
+import { GENERATOR, STORAGE_PREFIX } from '../config/branding'
 import { migrateV1Review } from '../migrate/v1ToV2'
 import { uid } from '../model/v2/defaults'
 import {
@@ -18,6 +18,7 @@ import {
   type ReviewKind,
 } from '../model/v2/schema'
 import type { ParsedImport } from './importV2'
+import { SETU_INSTITUTION, withInstitution } from './provenance'
 
 export const INDEX_KEY = `${STORAGE_PREFIX}:v2:index`
 export const reviewKey = (id: string) => `${STORAGE_PREFIX}:v2:review:${id}`
@@ -81,14 +82,62 @@ export function loadReview(storage: Storage, id: string): AnyReview | undefined 
   }
 }
 
-export function saveReview(storage: Storage, review: AnyReview): void {
-  storage.setItem(reviewKey(review.id), JSON.stringify(review))
-  const index = readIndex(storage)
-  const entry = indexEntry(review)
-  const i = index.reviews.findIndex((r) => r.id === review.id)
-  if (i >= 0) index.reviews[i] = entry
-  else index.reviews.push(entry)
-  writeIndex(storage, index)
+/**
+ * Save one review and its index entry, and return the review as stored. Throws if the browser
+ * refuses the write (e.g. storage is full). The review and the index are never left disagreeing:
+ * if the index cannot be written, the review entry is put back as it was.
+ */
+export function saveReview(storage: Storage, review: AnyReview): AnyReview {
+  const stored = { ...review, generator: GENERATOR }
+  const key = reviewKey(review.id)
+  const previous = storage.getItem(key)
+  storage.setItem(key, JSON.stringify(stored))
+  try {
+    const index = readIndex(storage)
+    const entry = indexEntry(stored)
+    const i = index.reviews.findIndex((r) => r.id === review.id)
+    if (i >= 0) index.reviews[i] = entry
+    else index.reviews.push(entry)
+    writeIndex(storage, index)
+  } catch (e) {
+    restore(storage, key, previous)
+    throw e
+  }
+  return stored
+}
+
+function restore(storage: Storage, key: string, previous: string | null) {
+  try {
+    if (previous === null) storage.removeItem(key)
+    else storage.setItem(key, previous)
+  } catch {
+    // Putting back a value no larger than before is expected to succeed; if not, loadReview
+    // still validates whatever is stored.
+  }
+}
+
+/**
+ * Save several reviews as one change: if any write fails, every review and the index are put
+ * back as they were, and the error is thrown.
+ */
+export function saveReviews(storage: Storage, reviews: AnyReview[]): AnyReview[] {
+  const previousIndex = storage.getItem(INDEX_KEY)
+  const previous = reviews.map((r) => [reviewKey(r.id), storage.getItem(reviewKey(r.id))] as const)
+  try {
+    return reviews.map((r) => saveReview(storage, r))
+  } catch (e) {
+    for (const [key, value] of previous) restore(storage, key, value)
+    restore(storage, INDEX_KEY, previousIndex)
+    throw e
+  }
+}
+
+/** A plain-language reason a save failed, for messages to the user. */
+export function storageErrorMessage(e: unknown): string {
+  const name = e instanceof Error ? `${e.name} ${e.message}` : String(e)
+  return /quota/i.test(name)
+    ? 'this browser’s storage for the site is full'
+    : 'this browser did not allow the review to be saved'
 }
 
 export function deleteReview(storage: Storage, id: string): void {
@@ -112,15 +161,42 @@ type ParsedPacket = Extract<ParsedImport, { type: 'module-contribution' | 'progr
 
 const describe = (n: number, what: string) => `${n} ${what}${n === 1 ? '' : 's'}`
 
+export interface ImportOptions {
+  /**
+   * Ids of reviews in the file that have no institution name field and that the user confirmed
+   * were exported from the SETU edition: their Institution Name is set to the SETU name. Reviews
+   * not listed are left blank.
+   */
+  setuOrigin?: ReadonlySet<string>
+}
+
 /**
  * Save the reviews in an imported file as new saved reviews. A v1 review is migrated into new
  * reviews and never replaces anything; a v2 review whose id is already saved is replaced or kept
- * alongside, as `onConflict` decides. Nothing is written if the file is invalid.
+ * alongside, as `onConflict` decides. Nothing is written if the file is invalid, and nothing is
+ * kept if the browser refuses any of the writes.
  */
 export function importIntoLibrary(
   storage: Storage,
   parsed: ParsedImport,
   onConflict: (existing: IndexEntry, incoming: AnyReview) => ConflictChoice,
+  options: ImportOptions = {},
+): LibraryImportResult {
+  try {
+    return importReviews(storage, parsed, onConflict, options)
+  } catch (e) {
+    return {
+      ok: false,
+      error: `Nothing was imported because ${storageErrorMessage(e)}. Your saved reviews have not been changed. Export reviews you no longer need and delete them from Saved reviews to make space, then try again.`,
+    }
+  }
+}
+
+function importReviews(
+  storage: Storage,
+  parsed: ParsedImport,
+  onConflict: (existing: IndexEntry, incoming: AnyReview) => ConflictChoice,
+  { setuOrigin = new Set() }: ImportOptions,
 ): LibraryImportResult {
   if (!parsed.ok) return parsed
   switch (parsed.type) {
@@ -139,43 +215,68 @@ export function importIntoLibrary(
         message: 'This file holds programme prompts. Import it from a module review.',
       }
     case 'v1-review': {
+      // Only the SETU edition's original single-review tool wrote version 1 files.
       const { programme, modules } = migrateV1Review(parsed.review)
-      for (const r of [...modules, programme]) saveReview(storage, r)
+      const reviews = [programme, ...modules].map((r) => withInstitution(r, SETU_INSTITUTION))
+      saveReviews(storage, reviews)
       return {
         ok: true,
-        saved: [programme, ...modules],
-        message: `Brought in a review from the previous version as 1 programme review and ${describe(modules.length, 'module review')}.`,
+        saved: reviews,
+        message: `Brought in a review from the SETU edition’s earlier single combined review as 1 programme review and ${describe(modules.length, 'module review')}. Institution Name has been set to ${SETU_INSTITUTION}; you can change or clear it on each review’s context page.${unknownNote(parsed.unknownFields, false)}`,
       }
     }
     case 'review':
     case 'library': {
       const incoming = parsed.type === 'review' ? [parsed.review] : parsed.bundle.reviews
       const index = readIndex(storage)
-      const saved = incoming.map((review) => {
+      // The SETU name goes only on reviews the user ticked, matched by their id in the file.
+      const named = incoming.map((r) =>
+        setuOrigin.has(r.id) ? withInstitution(r, SETU_INSTITUTION) : r,
+      )
+      const toSave = named.map((review) => {
         const existing = index.reviews.find((r) => r.id === review.id)
-        const r =
-          existing && onConflict(existing, review) === 'keep-both'
-            ? { ...review, id: uid(), updatedAt: new Date().toISOString() }
-            : review
-        saveReview(storage, r)
-        return r
+        return existing && onConflict(existing, review) === 'keep-both'
+          ? { ...review, id: uid(), updatedAt: new Date().toISOString() }
+          : review
       })
-      return { ok: true, saved, message: `Imported ${describe(saved.length, 'review')}.` }
+      const saved = saveReviews(storage, toSave)
+      const n = named.filter((r, i) => r !== incoming[i]).length
+      return {
+        ok: true,
+        saved,
+        message: `Imported ${describe(saved.length, 'review')}.${n ? ` Institution Name was set to ${SETU_INSTITUTION} on ${describe(n, 'review')}.` : ''}${unknownNote(parsed.unknownFields)}`,
+      }
     }
   }
 }
 
+/** Tells the user about fields in a file this edition does not define, and what became of them. */
+export function unknownNote(paths: string[], kept = true): string {
+  if (!paths.length) return ''
+  const shown = paths.slice(0, 3).join(', ')
+  return ` The file contains ${describe(paths.length, 'field')} this edition does not use (${shown}${paths.length > 3 ? ', …' : ''}). ${kept ? 'They have been kept unchanged and will be included when you export.' : 'They were not carried over.'}`
+}
+
+/**
+ * Every saved review as one bundle. `unsaved` holds reviews whose latest changes could not be
+ * saved: they are exported in place of (or as well as) their stored copies, so a backup taken
+ * after a failed save still has the latest work.
+ */
 export function libraryBundle(
   storage: Storage,
   exportedAt = new Date().toISOString(),
+  unsaved: Record<string, AnyReview> = {},
 ): LibraryBundle {
+  const stored = listReviews(storage)
+    .map((e) => unsaved[e.id] ?? loadReview(storage, e.id))
+    .filter((r): r is AnyReview => !!r)
+  const extra = Object.values(unsaved).filter((r) => !stored.some((s) => s.id === r.id))
   return {
     packetType: 'library',
     schemaVersion: SCHEMA_VERSION_V2,
+    generator: GENERATOR,
     exportedAt,
-    reviews: listReviews(storage)
-      .map((e) => loadReview(storage, e.id))
-      .filter((r): r is AnyReview => !!r),
+    reviews: [...stored, ...extra],
   }
 }
 
